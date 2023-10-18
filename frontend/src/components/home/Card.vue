@@ -1,9 +1,25 @@
 <script setup lang="ts">
 const props = defineProps({
-  pictureURL: String,
-  icon: String,
-  text: String,
-  URL: String,
+  pictureURL: {
+    type: String,
+    default: "",
+    required: true,
+  },
+  icon: {
+    type: String,
+    default: "",
+    required: true,
+  },
+  text: {
+    type: String,
+    default: "",
+    required: true,
+  },
+  URL: {
+    type: String,
+    default: "",
+    required: true,
+  },
 });
 </script>
 

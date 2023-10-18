@@ -34,7 +34,7 @@ class WebSocketService {
     state.connected = false;
   }
 
-  private onOpen(event: Event): void {
+  private onOpen(_: Event): void {
     console.log("Connected to " + this.url);
   }
 
@@ -47,7 +47,7 @@ class WebSocketService {
     }
   }
 
-  private onClose(event: CloseEvent): void {
+  private onClose(_: CloseEvent): void {
     console.log("Disconnected to " + this.url);
   }
 

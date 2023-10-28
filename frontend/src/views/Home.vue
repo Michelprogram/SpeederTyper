@@ -17,7 +17,7 @@ import { usePlayerStore } from "@/store/player";
 
 const styleJoinRoom = computed(() => {
   if (!state.connected)
-    return "col-span-2 row-span-1 overflow-y-hidden relative cursor-not-allowed opacity-25";
+    return "col-span-2 row-span-1 overflow-y-hidden relative cursor-not-allowed opacity-25 pointer-events-none";
   return "col-span-2 row-span-1 overflow-y-hidden relative cursor-pointer";
 });
 

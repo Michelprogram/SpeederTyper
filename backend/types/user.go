@@ -1,6 +1,8 @@
-package pkg
+package types
 
-import "golang.org/x/net/websocket"
+import (
+	"golang.org/x/net/websocket"
+)
 
 type User struct {
 	Ws       *websocket.Conn
@@ -8,13 +10,6 @@ type User struct {
 }
 
 func NewUser(ws *websocket.Conn, username string) *User {
-
-	response := Response{
-		Name: USERNAME,
-		Data: username,
-	}
-
-	SendJsonResponse(ws, response)
 
 	return &User{
 		Ws:       ws,

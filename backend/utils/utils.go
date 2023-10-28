@@ -25,13 +25,3 @@ func RandomUsername() string {
 
 	return username
 }
-
-func FindAndRemoveElement(array []string, looking string) []string {
-	for index, el := range array {
-		if el == looking {
-			array[index] = array[len(array)-1]
-			return array[:len(array)-1]
-		}
-	}
-	return array
-}

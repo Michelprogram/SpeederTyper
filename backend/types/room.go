@@ -1,4 +1,4 @@
-package pkg
+package types
 
 import (
 	"encoding/json"
@@ -45,14 +45,14 @@ func (r *Room) JoinRoom(user *User, key string) error {
 	return nil
 }
 
-func (r *Room) LeaveRoom(currentUser *User, key string) error {
+func (r *Room) LeaveRoom(username string, key string) error {
 	r.RLock()
 	defer r.RUnlock()
 
 	users, _ := r.Rooms[key]
 
 	for index, user := range users {
-		if user.Username == currentUser.Username {
+		if user.Username == username {
 			r.Rooms[key] = append(r.Rooms[key][:index], r.Rooms[key][index+1:]...)
 			break
 		}

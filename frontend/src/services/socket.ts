@@ -11,14 +11,10 @@ export const state = reactive({
 });
 
 class WebSocketService {
-  private socket: WebSocket;
+  private socket!: WebSocket;
 
   constructor(private url: string) {
-    this.socket = new WebSocket(url);
-    this.socket.onopen = this.onOpen.bind(this);
-    this.socket.onmessage = this.onMessage.bind(this);
-    this.socket.onclose = this.onClose.bind(this);
-    state.connected = true;
+    this.connect();
   }
 
   public connect() {
@@ -26,7 +22,7 @@ class WebSocketService {
     this.socket.onopen = this.onOpen.bind(this);
     this.socket.onmessage = this.onMessage.bind(this);
     this.socket.onclose = this.onClose.bind(this);
-    state.connected = true;
+    this.socket.onerror = this.onError.bind(this);
   }
 
   public disconnect() {
@@ -34,8 +30,12 @@ class WebSocketService {
     state.connected = false;
   }
 
+  private onError(e: Event): void {
+    console.warn("Error during connection : " + e);
+  }
+
   private onOpen(_: Event): void {
-    console.log("Connected to " + this.url);
+    state.connected = true;
   }
 
   private onMessage(event: MessageEvent): void {
@@ -48,7 +48,7 @@ class WebSocketService {
   }
 
   private onClose(_: CloseEvent): void {
-    console.log("Disconnected to " + this.url);
+    state.connected = false;
   }
 
   // Méthode pour envoyer des messages au serveur

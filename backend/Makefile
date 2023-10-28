@@ -6,3 +6,6 @@ install-dependencies:
 
 run-backend:
 	go run cmd/main.go
+
+build:
+	go build -o build/speeder-typer-webscoket ./...

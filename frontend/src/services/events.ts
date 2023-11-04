@@ -8,9 +8,11 @@ import { useRoomStore } from "@/store/room";
 export enum EventTypes {
   "pong" = "pong",
   "username" = "username",
+  "rooms-info" = "rooms-info",
   "room-info" = "room-info",
   "room-created" = "room-created",
   "room-join-by-username" = "room-join-by-username",
+  "room-start" = "room-start",
 }
 
 type WebSocketEvent = any;
@@ -21,7 +23,7 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
   [EventTypes.pong]: (data: WebSocketEvent) => {
     console.log("Message from ping", data);
   },
-  [EventTypes["room-info"]]: (data: WebSocketEvent) => {
+  [EventTypes["rooms-info"]]: (data: WebSocketEvent) => {
     const { players } = storeToRefs(usePlayerStore());
     const { rooms } = storeToRefs(useRoomStore());
 
@@ -58,5 +60,26 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
     }
 
     router.push({ name: "Game", params: { id: roomID } });
+  },
+  [EventTypes["room-info"]]: function (data: WebSocketEvent): void {
+    const { currentRoom } = storeToRefs(useRoomStore());
+
+    currentRoom.value = data;
+  },
+  [EventTypes["room-start"]]: function (everyoneReady: WebSocketEvent): void {
+    if (everyoneReady) {
+      //TODO start game
+    } else {
+      const store = useAlertStore();
+
+      const { title, isVisible, description } = storeToRefs(store);
+
+      isVisible.value = true;
+
+      title.value = "Everyone should be ready to start the game";
+
+      description.value =
+        "You can't run the game because everyone should be ready.";
+    }
   },
 };

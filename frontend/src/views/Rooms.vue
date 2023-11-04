@@ -16,7 +16,7 @@ import { useRoomStore } from "@/store/room";
 const store = useRoomStore();
 
 const createRoom = () => {
-  socket.sendMessage({ name: "join-room" });
+  socket.sendMessage({ name: "create-room" });
 };
 </script>
 
@@ -44,7 +44,7 @@ const createRoom = () => {
             >
             <TableCell>{{ room.status ? "In game..." : "In lobby" }}</TableCell>
             <TableCell>{{ store.firstPlayers(room.id) }}</TableCell>
-            <TableCell class="text-right">{{ room.players.length }}</TableCell>
+            <TableCell class="text-right">{{ room.users.length }}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

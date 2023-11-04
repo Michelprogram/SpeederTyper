@@ -10,18 +10,19 @@ func MainWS(ws *websocket.Conn, websocketServer *server.Server) error {
 
 	log.Printf("New connection from client %s\n", ws.RemoteAddr())
 
-	websocketServer.AddUser(ws)
-
-	err := websocketServer.Sender.RoomsInfo(websocketServer.Users, websocketServer.Rooms)
+	err := websocketServer.AddUser(ws)
 	if err != nil {
 		return err
 	}
 
 	websocketServer.ReadLoop(ws)
 
-	log.Printf("User %s deconnected\n", ws.RemoteAddr())
+	err = websocketServer.RemoveUser(ws)
+	if err != nil {
+		return err
+	}
 
-	websocketServer.RemoveUser(ws)
+	log.Printf("User %s deconnected\n", ws.RemoteAddr())
 
 	return nil
 }

@@ -3,27 +3,34 @@ import { computed, ref } from "vue";
 
 type Room = {
   id: string;
-  status: boolean; //true in game false not running
-  players: Array<Player>;
+  text: string;
+  created_by: string;
+  status: boolean;
+  users: Array<Player>;
 };
 
 type Player = {
-  Ws: {
-    MaxPayloadBytes: number;
-    PayloadType: number;
-  };
   username: string;
+  isReady: boolean;
 };
 
 export const useRoomStore = defineStore("room", () => {
   const rooms = ref(new Array<Room>());
+
+  const currentRoom = ref<Room>({
+    id: "",
+    text: "",
+    created_by: "",
+    status: false,
+    users: new Array<Player>(),
+  });
 
   const players = (id: string): Array<string> => {
     const room = rooms.value.find((r) => r.id == id);
 
     if (room == undefined) return [];
 
-    return room.players.map((p) => p.username);
+    return room.users.map((p) => p.username);
   };
 
   const firstPlayers = (id: string): string => {
@@ -39,6 +46,7 @@ export const useRoomStore = defineStore("room", () => {
     players,
     firstPlayers,
     orderedRooms,
+    currentRoom,
     rooms,
   };
 });

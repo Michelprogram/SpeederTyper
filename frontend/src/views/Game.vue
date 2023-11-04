@@ -3,12 +3,14 @@ import { onMounted, onUnmounted } from "vue";
 import { webSocketService as socket } from "@/services/socket";
 import { useRoute } from "vue-router";
 import { computed } from "vue";
-import { Button } from "@/components/ui/button";
+import Bottom from "@/components/game/Bottom.vue";
 import { useRoomStore } from "@/store/room";
+import { storeToRefs } from "pinia";
+import ListUser from "@/components/game/ListUser.vue";
 
 const idRoom = useRoute().params.id as string;
 
-const store = useRoomStore();
+const { currentRoom } = storeToRefs(useRoomStore());
 
 const copy = computed(() => {
   navigator.clipboard.writeText(idRoom.toString());
@@ -37,24 +39,11 @@ onUnmounted(() => {
       </p>
     </div>
     <div class="flex w-5/6 m-auto gap-5 h-96">
-      <div class="border-2 border-solid border-secondary rounded-xl w-1/4">
-        <h4 class="mb-4 text-lg font-medium leading-none text-center">
-          Players - {{ store.players(idRoom).length }}
-        </h4>
-        <div v-for="user in store.players(idRoom)" :key="user">
-          <div class="text-sm mb-3">
-            <p>
-              {{ user }}
-            </p>
-          </div>
-        </div>
+      <ListUser />
+      <div class="w-full border-2 border-solid border-secondary rounded-xl">
+        <p>{{ currentRoom.text }}</p>
       </div>
-      <div
-        class="w-full border-2 border-solid border-secondary rounded-xl"
-      ></div>
     </div>
-    <div class="w-full flex justify-center items-center">
-      <Button class="rounded-xl m-auto">Start game</Button>
-    </div>
+    <Bottom />
   </div>
 </template>

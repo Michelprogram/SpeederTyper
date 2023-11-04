@@ -2,7 +2,7 @@ package server
 
 import (
 	"encoding/json"
-	"github.com/michelprogram/speeder-typer/types"
+	"github.com/michelprogram/speeder-typer/rooms"
 	"github.com/michelprogram/speeder-typer/utils"
 	"golang.org/x/net/websocket"
 	"io"
@@ -13,14 +13,17 @@ func NewServer(sender EventSender, receiver EventReceiver) *Server {
 
 	eventsToReceive := map[string]ReceiverFunction{
 		"ping":             receiver.OnPing,
+		"create-room":      receiver.OnCreateRoom,
 		"join-room":        receiver.OnJoinRoom,
 		"leave-room":       receiver.OnLeaveRoom,
 		"join-by-username": receiver.OnJoinByUsername,
+		"set-ready":        receiver.OnSetReady,
+		"start-game":       receiver.OnStartGame,
 	}
 
 	return &Server{
-		Users:  make(map[*websocket.Conn]string),
-		Room:   types.NewRooms(),
+		Users:  make(map[*websocket.Conn]string, 0),
+		Rooms:  rooms.NewRooms(),
 		Events: eventsToReceive,
 		Sender: sender,
 	}
@@ -73,14 +76,25 @@ func (s *Server) ReadLoop(ws *websocket.Conn) {
 	}
 }
 
-func (s *Server) AddUser(ws *websocket.Conn) {
+func (s *Server) AddUser(ws *websocket.Conn) error {
 
 	s.Users[ws] = utils.RandomUsername()
 
-	s.Sender.UserLogged(ws, s.Users[ws])
+	err := s.Sender.RoomsInfo(s.Users, s.Rooms.Games)
+	if err != nil {
+		return err
+	}
+
+	err = s.Sender.UserLogged(ws, s.Users[ws])
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }
 
-func (s *Server) RemoveUser(ws *websocket.Conn) {
+func (s *Server) RemoveUser(ws *websocket.Conn) error {
 
 	_, exist := s.Users[ws]
 
@@ -88,4 +102,10 @@ func (s *Server) RemoveUser(ws *websocket.Conn) {
 		delete(s.Users, ws)
 	}
 
+	err := s.Sender.RoomsInfo(s.Users, s.Rooms.Games)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

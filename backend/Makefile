@@ -5,7 +5,7 @@ install-dependencies:
 	cd frontend && bun install
 
 run-backend:
-	go run cmd/main.go
+	go run cmd/main.go -env dev
 
 build:
-	go build -o build/speeder-typer-webscoket ./...
+	go build -o build/speeder-typer-webscoket cmd/main.go

@@ -2,5 +2,5 @@ package types
 
 type RoomInfo struct {
 	Name    string  `json:"id"`
-	Players []*User `json:"players"`
+	Players []*User `json:"users"`
 }

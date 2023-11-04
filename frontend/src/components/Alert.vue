@@ -25,7 +25,7 @@ const { isVisible, title, description } = storeToRefs(useAlertStore());
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogAction>Continue</AlertDialogAction>
+        <AlertDialogAction @click="() => isVisible = !isVisible">Continue</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

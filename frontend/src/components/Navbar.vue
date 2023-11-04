@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import { webSocketService } from "@/services/socket";
 import { usePlayerStore } from "@/store/player";
+import { onBeforeUnmount } from "vue";
 
 const store = usePlayerStore();
+
+onBeforeUnmount(() => {
+  webSocketService.disconnect();
+});
 </script>
 
 <template>

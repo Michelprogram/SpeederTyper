@@ -5,6 +5,7 @@ import (
 	"github.com/michelprogram/speeder-typer/server"
 	"github.com/michelprogram/speeder-typer/server/events/receive"
 	"github.com/michelprogram/speeder-typer/server/events/send"
+	"github.com/michelprogram/speeder-typer/utils"
 	"log"
 	"net/http"
 
@@ -12,6 +13,8 @@ import (
 )
 
 func main() {
+
+	log.Printf("Environnement %s\n", utils.Env)
 
 	log.Println("🚀 Lancement de l'api sur le port 3000...")
 

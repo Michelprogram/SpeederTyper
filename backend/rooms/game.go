@@ -89,3 +89,7 @@ func (g Game) IsEveryoneReady() bool {
 	//Createur of user can't be ready
 	return count == len(g.Users)-1
 }
+
+func (g *Game) SetStatus(status bool) {
+	g.Status = status
+}

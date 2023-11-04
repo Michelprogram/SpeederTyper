@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	ROOM_START            = "room-start"
+	GAME_CANT_START       = "game-cant-start"
+	GAME_CAN_START        = "game-can-start"
 	ROOM_CREATED          = "room-created"
 	ROOM_JOIN_BY_USERNAME = "room-join-by-username"
 	PONG                  = "pong"
@@ -33,22 +34,34 @@ func NewReceiver(sender server.EventSender) server.EventReceiver {
 
 func (r *Receiver) OnStartGame(websocketServer *server.Server, conn *websocket.Conn, parameters map[string]string) error {
 
+	var response types.Response
+
 	id, _ := parameters["id"]
 
-	game := websocketServer.Rooms.Games[id]
+	canStartGame := websocketServer.Rooms.IsEveryoneReady(id)
 
-	res := game.IsEveryoneReady()
+	//Si pas ready on informe que le creator
 
-	response := types.Response{
-		Name: ROOM_START,
-		Data: res,
+	if !canStartGame {
+		response = types.Response{
+			Name: GAME_CANT_START,
+		}
+
+		err := r.Sender.JsonResponse(conn, response)
+
+		if err != nil {
+			return err
+		}
+
+		return nil
 	}
 
-	err := r.Sender.JsonResponse(conn, response)
+	//Si ready on informe tout le monde
+	game := websocketServer.Rooms.GetGame(id)
+	defer r.Sender.RoomInfo(conn, game)
+	defer r.Sender.RoomsInfo(websocketServer.Users, websocketServer.Rooms.Games)
 
-	if err != nil {
-		return err
-	}
+	websocketServer.Rooms.StartGame(id)
 
 	return nil
 }

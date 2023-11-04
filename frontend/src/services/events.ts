@@ -1,6 +1,5 @@
 import router from "@/routes";
-
-import { useAlertStore } from "@/store/alert";
+import { useToast } from "@/components/ui/toast/use-toast";
 import { storeToRefs } from "pinia";
 import { usePlayerStore } from "@/store/player";
 import { useRoomStore } from "@/store/room";
@@ -12,7 +11,8 @@ export enum EventTypes {
   "room-info" = "room-info",
   "room-created" = "room-created",
   "room-join-by-username" = "room-join-by-username",
-  "room-start" = "room-start",
+  "game-cant-start" = "game-cant-start",
+  "game-can-start" = "game-can-start",
 }
 
 type WebSocketEvent = any;
@@ -46,15 +46,12 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
     const roomID = data;
 
     if (roomID == "-1") {
-      const store = useAlertStore();
+      const { toast } = useToast();
 
-      const { title, isVisible, description } = storeToRefs(store);
-
-      isVisible.value = true;
-
-      title.value = "Not in game.";
-
-      description.value = "The user you trying to join is not in game.";
+      toast({
+        title: "Not in game.",
+        description: "The user you trying to join is not in game.",
+      });
 
       return;
     }
@@ -66,20 +63,19 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
 
     currentRoom.value = data;
   },
-  [EventTypes["room-start"]]: function (everyoneReady: WebSocketEvent): void {
-    if (everyoneReady) {
-      //TODO start game
-    } else {
-      const store = useAlertStore();
+  [EventTypes["game-cant-start"]]: function (
+    everyoneReady: WebSocketEvent
+  ): void {
+    const { toast } = useToast();
 
-      const { title, isVisible, description } = storeToRefs(store);
+    toast({
+      title: "Everyone should be ready to start the game",
+      description: "You can't run the game because everyone should be ready.",
+    });
+  },
+  [EventTypes["game-can-start"]]: function (data: WebSocketEvent): void {
+    const { currentRoom } = storeToRefs(useRoomStore());
 
-      isVisible.value = true;
-
-      title.value = "Everyone should be ready to start the game";
-
-      description.value =
-        "You can't run the game because everyone should be ready.";
-    }
+    currentRoom.value.status = true;
   },
 };

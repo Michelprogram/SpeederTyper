@@ -22,7 +22,7 @@ func NewSender() *Sender {
 	return &Sender{}
 }
 
-func (s *Sender) RoomInfo(ws *websocket.Conn, game *rooms.Game) error {
+func (s *Sender) RoomInfo(_ *websocket.Conn, game *rooms.Game) error {
 
 	response := types.Response{
 		Name: ROOM_INFO,
@@ -55,6 +55,7 @@ func (s *Sender) RoomsInfo(users map[*websocket.Conn]string, rooms map[string]*r
 	for key, game := range rooms {
 		stats = append(stats, types.RoomInfo{
 			Name:    key,
+			Status:  game.Status,
 			Players: game.GetUsers(),
 		})
 	}

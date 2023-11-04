@@ -4,13 +4,10 @@ import { webSocketService as socket } from "@/services/socket";
 import { useRoute } from "vue-router";
 import { computed } from "vue";
 import Bottom from "@/components/game/Bottom.vue";
-import { useRoomStore } from "@/store/room";
-import { storeToRefs } from "pinia";
 import ListUser from "@/components/game/ListUser.vue";
+import Words from "@/components/game/Words.vue";
 
 const idRoom = useRoute().params.id as string;
-
-const { currentRoom } = storeToRefs(useRoomStore());
 
 const copy = computed(() => {
   navigator.clipboard.writeText(idRoom.toString());
@@ -40,9 +37,7 @@ onUnmounted(() => {
     </div>
     <div class="flex w-5/6 m-auto gap-5 h-96">
       <ListUser />
-      <div class="w-full border-2 border-solid border-secondary rounded-xl">
-        <p>{{ currentRoom.text }}</p>
-      </div>
+      <Words />
     </div>
     <Bottom />
   </div>

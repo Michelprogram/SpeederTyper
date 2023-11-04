@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-type Room = {
+export type Room = {
   id: string;
   text: string;
   created_by: string;
@@ -42,9 +42,15 @@ export const useRoomStore = defineStore("room", () => {
     return rooms.value.sort((a, b) => (a > b ? 1 : -1));
   });
 
+  const playerReady = computed((): Array<Player> => {
+    if (currentRoom.value.users == undefined) return [];
+    return currentRoom.value.users.filter((u) => u.isReady);
+  });
+
   return {
     players,
     firstPlayers,
+    playerReady,
     orderedRooms,
     currentRoom,
     rooms,

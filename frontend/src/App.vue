@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
 import Navbar from "./components/Navbar.vue";
-import Alert from "./components/Alert.vue";
+import Toaster from "@/components/ui/toast/Toaster.vue";
 </script>
 
 <template>
   <div>
+    <Toaster />
     <Navbar />
-    <Alert />
     <RouterView v-slot="{ Component }">
       <Transition name="slide" mode="out-in">
         <component :is="Component" />

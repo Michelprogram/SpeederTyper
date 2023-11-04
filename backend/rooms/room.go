@@ -137,3 +137,28 @@ func (r *Rooms) FindUserAmongRooms(username string) string {
 
 	return ""
 }
+
+func (r *Rooms) IsEveryoneReady(key string) bool {
+	r.RLock()
+	defer r.RUnlock()
+
+	game := r.Games[key]
+
+	return game.IsEveryoneReady()
+}
+
+func (r *Rooms) StartGame(key string) {
+	r.RLock()
+	defer r.RUnlock()
+
+	game := r.Games[key]
+
+	game.SetStatus(true)
+}
+
+func (r *Rooms) GetGame(key string) *Game {
+	r.RLock()
+	defer r.RUnlock()
+
+	return r.Games[key]
+}

@@ -11,12 +11,29 @@ import {
 } from "@/components/ui/table";
 
 import { webSocketService as socket } from "@/services/socket";
-import { useRoomStore } from "@/store/room";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { useRoomStore, Room } from "@/store/room";
+import { useRouter } from "vue-router";
+
+const { toast } = useToast();
 
 const store = useRoomStore();
 
+const router = useRouter();
+
 const createRoom = () => {
   socket.sendMessage({ name: "create-room" });
+};
+
+const joinRoom = (room: Room) => {
+  if (room.status) {
+    toast({
+      title: "Can't join the room",
+      description: "You can't join the room the game already started.",
+    });
+  } else {
+    router.push({ name: "Game", params: { id: room.id } });
+  }
 };
 </script>
 
@@ -37,7 +54,7 @@ const createRoom = () => {
           <TableRow
             v-for="room in store.orderedRooms"
             class="cursor-pointer"
-            @click="$router.push({ name: 'Game', params: { id: room.id } })"
+            @click="joinRoom(room)"
           >
             <TableCell class="font-medium"
               >#{{ room.id.slice(0, 4) }}</TableCell

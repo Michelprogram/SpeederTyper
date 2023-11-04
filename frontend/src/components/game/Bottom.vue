@@ -37,7 +37,10 @@ watch(readyMode, (newVal: boolean) => {
 </script>
 
 <template>
-  <div class="w-full flex justify-center items-center">
+  <div
+    class="w-full flex justify-center items-center"
+    v-if="!currentRoom.status"
+  >
     <Button class="rounded-xl m-auto" v-if="isOwner" @click="startGame"
       >Start game</Button
     >

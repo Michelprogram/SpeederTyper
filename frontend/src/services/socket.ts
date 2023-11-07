@@ -57,11 +57,9 @@ class WebSocketService {
   }
 }
 
-const url = `ws://${
-  import.meta.env.DEV
-    ? "localhost:3000"
-    : "websocket-typer-3e4343a5a6b9.herokuapp.com"
-}/ws`;
+const url = import.meta.env.DEV
+  ? "ws://localhost:3000/ws"
+  : "wss://websocket-typer-3e4343a5a6b9.herokuapp.com/ws";
 
 let webSocketService: WebSocketService;
 

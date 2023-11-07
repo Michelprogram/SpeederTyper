@@ -99,7 +99,7 @@ func (s *Sender) GameEnd(game *rooms.Game) error {
 
 }
 
-//Change
+// Change
 func (s *Sender) RoomInfo(game *rooms.Game) error {
 
 	response := types.Response{

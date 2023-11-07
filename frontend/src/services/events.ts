@@ -64,9 +64,7 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
 
     currentRoom.value = data;
   },
-  [EventTypes["game-cant-start"]]: function (
-    everyoneReady: WebSocketEvent
-  ): void {
+  [EventTypes["game-cant-start"]]: function (_: WebSocketEvent): void {
     const { toast } = useToast();
 
     toast({
@@ -74,12 +72,12 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
       description: "You can't run the game because everyone should be ready.",
     });
   },
-  [EventTypes["game-can-start"]]: function (data: WebSocketEvent): void {
+  [EventTypes["game-can-start"]]: function (_: WebSocketEvent): void {
     const { currentRoom } = storeToRefs(useRoomStore());
 
     currentRoom.value.status = Status.Gaming;
   },
-  [EventTypes["game-end"]]: function (data: WebSocketEvent): void {
+  [EventTypes["game-end"]]: function (_: WebSocketEvent): void {
     const { currentRoom } = storeToRefs(useRoomStore());
 
     currentRoom.value.status = Status.Finish;

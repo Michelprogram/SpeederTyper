@@ -17,12 +17,5 @@ func MainWS(ws *websocket.Conn, websocketServer *server.Server) error {
 
 	websocketServer.ReadLoop(ws)
 
-	err = websocketServer.RemoveUser(ws)
-	if err != nil {
-		return err
-	}
-
-	log.Printf("User %s deconnected\n", ws.RemoteAddr())
-
-	return nil
+	return websocketServer.RemoveUser(ws)
 }

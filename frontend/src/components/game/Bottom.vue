@@ -16,7 +16,7 @@ const { currentUser } = storeToRefs(usePlayerStore());
 const { currentRoom } = storeToRefs(useRoomStore());
 
 const isOwner = computed((): boolean => {
-  return currentRoom.value.created_by == currentUser.value;
+  return currentRoom.value.created_by == currentUser.value.username;
 });
 
 const startGame = () => {
@@ -31,7 +31,7 @@ const startGame = () => {
 watch(readyMode, (newVal: boolean) => {
   socket.sendMessage({
     name: "set-ready",
-    data: { id: idRoom, username: currentUser.value, ready: newVal + "" },
+    data: { id: idRoom, username: currentUser.value.username, ready: newVal + "" },
   });
 });
 </script>

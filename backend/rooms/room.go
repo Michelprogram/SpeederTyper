@@ -57,7 +57,7 @@ func (r *Rooms) CreateRoom(user *types.User, key string) error {
 	return nil
 }
 
-func (r *Rooms) JoinRoom(user *types.User, key string) error {
+func (r *Rooms) JoinRoom(user *types.User, key string) {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -65,10 +65,9 @@ func (r *Rooms) JoinRoom(user *types.User, key string) error {
 
 	game.UserJoin(user)
 
-	return nil
 }
 
-func (r *Rooms) LeaveRoom(username string, key string) error {
+func (r *Rooms) LeaveRoom(username string, key string) {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -79,8 +78,6 @@ func (r *Rooms) LeaveRoom(username string, key string) error {
 	if size == 0 {
 		r.DeleteRoom(key)
 	}
-
-	return nil
 }
 
 func (r *Rooms) DeleteRoom(key string) {
@@ -153,7 +150,11 @@ func (r *Rooms) StartGame(key string) {
 
 	game := r.Games[key]
 
-	game.SetStatus(true)
+	for _, user := range game.Users {
+		user.Position = 0
+	}
+
+	game.SetStatus(Gaming)
 }
 
 func (r *Rooms) GetGame(key string) *Game {

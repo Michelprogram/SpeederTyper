@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/michelprogram/speeder-typer/handlers"
 	"github.com/michelprogram/speeder-typer/server"
-	"github.com/michelprogram/speeder-typer/server/events/receive"
-	"github.com/michelprogram/speeder-typer/server/events/send"
+	"github.com/michelprogram/speeder-typer/server/receiver"
+	"github.com/michelprogram/speeder-typer/server/sender"
 	"github.com/michelprogram/speeder-typer/utils"
 	"log"
 	"net/http"
@@ -18,9 +18,21 @@ func main() {
 
 	log.Println("🚀 Lancement de l'api sur le port 3000...")
 
-	sender := send.NewSender()
-	receiver := receive.NewReceiver(sender)
-	websocketServer := server.NewServer(sender, receiver)
+	sender := sender.NewSender()
+
+	events := map[string]server.EventDataHandler{
+		"ping":             &receiver.PingHandler{},
+		"create-room":      &receiver.CreateRoom{},
+		"join-room":        &receiver.JoinRoom{},
+		"leave-room":       &receiver.LeaveRoom{},
+		"join-by-username": &receiver.JoinByUsername{},
+		"set-ready":        &receiver.SetReady{},
+		"start-game":       &receiver.StartGame{},
+		"typing-game":      &receiver.Typing{},
+		"end-game":         &receiver.EndGame{},
+	}
+	
+	websocketServer := server.NewServer(sender, events)
 
 	http.Handle("/ws", websocket.Handler(func(ws *websocket.Conn) {
 		err := handlers.MainWS(ws, websocketServer)

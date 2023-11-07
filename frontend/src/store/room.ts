@@ -1,16 +1,23 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
+export enum Status {
+  Waiting = 0,
+  Gaming = 1,
+  Finish = 3,
+}
+
 export type Room = {
   id: string;
   text: string;
   created_by: string;
-  status: boolean;
+  status: Status;
   users: Array<Player>;
 };
 
-type Player = {
+export type Player = {
   username: string;
+  position: number;
   isReady: boolean;
 };
 
@@ -21,7 +28,7 @@ export const useRoomStore = defineStore("room", () => {
     id: "",
     text: "",
     created_by: "",
-    status: false,
+    status: Status.Waiting,
     users: new Array<Player>(),
   });
 

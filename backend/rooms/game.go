@@ -5,12 +5,18 @@ import (
 	"github.com/michelprogram/speeder-typer/utils"
 )
 
+const (
+	Waiting int = 0
+	Gaming  int = 1
+	Finish  int = 3
+)
+
 type Game struct {
 	Users     []*types.User `json:"users"`
 	CreatedBy string        `json:"created_by"`
 	Text      string        `json:"text"`
 	Id        string        `json:"id"`
-	Status    bool          `json:"status"`
+	Status    int           `json:"status"`
 }
 
 func NewGame(id string, username string) (*Game, error) {
@@ -26,7 +32,7 @@ func NewGame(id string, username string) (*Game, error) {
 		CreatedBy: username,
 		Text:      text,
 		Id:        id,
-		Status:    false,
+		Status:    Waiting,
 	}, nil
 }
 
@@ -86,10 +92,29 @@ func (g Game) IsEveryoneReady() bool {
 		}
 	}
 
-	//Createur of user can't be ready
 	return count == len(g.Users)-1
 }
 
-func (g *Game) SetStatus(status bool) {
+func (g *Game) SetStatus(status int) {
 	g.Status = status
+}
+
+func (g *Game) SetUserPosition(username string) {
+
+	for _, user := range g.Users {
+		if user.Username == username {
+			user.Position++
+		}
+	}
+
+}
+
+func (g Game) FindUserByUsername(username string) *types.User {
+	for _, user := range g.Users {
+		if user.Username == username {
+			return user
+		}
+	}
+
+	return nil
 }

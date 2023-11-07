@@ -79,5 +79,6 @@ func FetchRandomText() (sentence string, _ error) {
 		sentence = fmt.Sprintf("%s %s", sentence, randomWordGenerator.Data[index].Word.Value)
 	}
 
-	return sentence, nil
+	//Remove first space
+	return sentence[1:], nil
 }

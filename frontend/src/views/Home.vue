@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import router from "@/routes";
 import { state, webSocketService } from "@/services/socket";
-import { computed } from "vue";
-import Card from "@/components/home/Card.vue";
+import { Button } from "@/components/ui/button";
 
 import {
   Select,
@@ -14,12 +12,6 @@ import {
 } from "@/components/ui/select";
 
 import { usePlayerStore } from "@/store/player";
-
-const styleJoinRoom = computed(() => {
-  if (!state.connected)
-    return "col-span-2 row-span-1 overflow-y-hidden relative cursor-not-allowed opacity-25 pointer-events-none";
-  return "col-span-2 row-span-1 overflow-y-hidden relative cursor-pointer";
-});
 
 const joinRoomByUser = (user: string) => {
   webSocketService.sendMessage({
@@ -34,18 +26,20 @@ const store = usePlayerStore();
 </script>
 
 <template>
-  <div class="flex gap-10 pt-6 m-20 font-mono">
+  <div class="flex gap-10 pt-4 m-20 font-mono">
     <div class="flex flex-col gap-8 w-2/5">
-      <h1 class="font-bold text-6xl break-words leading-snug">
-        Who's the fatest typer ?
+      <h1 class="font-bold text-5xl break-words leading-snug">
+        Who's the fastest typer ?
       </h1>
       <p class="text-gray-500">
         This platforme is a game to challenge your friend in a race to know who
-        of you is the fatest typer
+        of you is the fastest typer
       </p>
       <div class="flex">
         <div class="flex flex-col gap-2">
-          <span class="font-bold text-3xl text-orange-600">21</span>
+          <span class="font-bold text-3xl text-orange-600">{{
+            store.players.length
+          }}</span>
           <p class="w-2/3 font-bold">Number of player connected</p>
         </div>
         <div class="flex flex-col gap-2">
@@ -59,8 +53,12 @@ const store = usePlayerStore();
             <SelectValue placeholder="Find a player" />
           </SelectTrigger>
           <SelectContent>
-            <SelectGroup v-for="user in store.orderedPlayers">
-              <SelectItem :value="user" @click="joinRoomByUser(user)">
+            <SelectGroup>
+              <SelectItem
+                v-for="user in store.players"
+                :value="user"
+                @click="joinRoomByUser(user)"
+              >
                 <p class="flex items-center">
                   {{ user }}
                   <span
@@ -74,32 +72,72 @@ const store = usePlayerStore();
       </div>
     </div>
     <div class="grid grid-cols-2 grid-rows-2 gap-x-5 gap-y-5 w-3/5">
-      <div :class="styleJoinRoom" @click="router.push('/join')">
+      <div class="w-full col-span-2 row-span-1 flex">
         <img
-          src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2942&q=80"
-          alt=""
-          srcset=""
-          class="rounded-3xl object-cover w-full h-[350px]"
+          src="/undraw_pair_programming.svg"
+          alt="Pair programming"
+          class="h-44 w-44"
         />
-        <p class="absolute text-white top-5 text-center text-3xl w-full">
-          Join room
-        </p>
+        <div
+          class="bg-white rounded-b p-4 flex flex-col justify-between leading-normal"
+        >
+          <div>
+            <p
+              class="text-sm text-gray-500 flex items-baseline gap-3 justify-start"
+            >
+              <font-awesome-icon icon="fa-solid fa-signal" />
+              Online content
+            </p>
+            <div class="text-gray-900 font-bold text-xl mb-2">
+              You think your're the best at typing ?
+            </div>
+            <p class="text-gray-700 text-base">
+              Challenge your friends or random through rooms. Check your
+              capabilities to typing in real world application context.
+            </p>
+            <Button
+              :class="`flex items-center w-fit mt-4 ${
+                state.connected
+                  ? ''
+                  : 'cursor-not-allowed opacity-25 pointer-events-none'
+              }`"
+            >
+              <RouterLink to="/join"> Join room </RouterLink>
+            </Button>
+          </div>
+        </div>
       </div>
-      <div class="col-span-1 row-span-1 relative">
-        <Card
-          pictureURL="https://images.unsplash.com/photo-1531857097499-b97a9ecf225d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80"
-          icon="plus"
-          text="Start a game"
-          URL="/offline"
+      <div class="max-w-sm rounded overflow-hidden col-span-1 row-span-1">
+        <img
+          class="w-28 h-28"
+          src="/undraw_programmer.svg"
+          alt="Sunset in the mountains"
         />
+        <div class="py-4">
+          <div class="font-bold text-xl mb-2">Train alone</div>
+          <p class="text-gray-700 text-base">
+            Challenge yourself in infinity mode, and deal with yourself.
+          </p>
+        </div>
+        <Button>
+          <RouterLink to="/offline">Start a game offline</RouterLink>
+        </Button>
       </div>
-      <div class="col-span-1 row-span-1 relative">
-        <Card
-          pictureURL="https://images.unsplash.com/photo-1533237264985-ee62f6d342bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2938&q=80"
-          icon="bars"
-          text="Scoreboard"
-          URL="/"
+      <div class="max-w-sm rounded overflow-hidden col-span-1 row-span-1">
+        <img
+          class="w-28 h-28"
+          src="/undraw_chart.svg"
+          alt="Sunset in the mountains"
         />
+        <div class="py-4">
+          <div class="font-bold text-xl mb-2">Check the leaderboard</div>
+          <p class="text-gray-700 text-base">
+            You'd like to see who are the top players ?
+          </p>
+        </div>
+        <Button>
+          <RouterLink to="/">Scoreboard</RouterLink>
+        </Button>
       </div>
     </div>
   </div>

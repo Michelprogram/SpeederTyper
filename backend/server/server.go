@@ -9,22 +9,19 @@ import (
 	"log"
 )
 
-func NewServer(sender EventSender, receiver EventReceiver) *Server {
+type Server struct {
+	Users  map[*websocket.Conn]string
+	Events map[string]EventDataHandler
+	Sender EventSender
+	Rooms  *rooms.Rooms
+}
 
-	eventsToReceive := map[string]ReceiverFunction{
-		"ping":             receiver.OnPing,
-		"create-room":      receiver.OnCreateRoom,
-		"join-room":        receiver.OnJoinRoom,
-		"leave-room":       receiver.OnLeaveRoom,
-		"join-by-username": receiver.OnJoinByUsername,
-		"set-ready":        receiver.OnSetReady,
-		"start-game":       receiver.OnStartGame,
-	}
+func NewServer(sender EventSender, events map[string]EventDataHandler) *Server {
 
 	return &Server{
 		Users:  make(map[*websocket.Conn]string, 0),
 		Rooms:  rooms.NewRooms(),
-		Events: eventsToReceive,
+		Events: events,
 		Sender: sender,
 	}
 
@@ -43,7 +40,7 @@ func (s *Server) handleWebSocketEvents(data []byte, ws *websocket.Conn) error {
 	eventFunc, ok := s.Events[event.Name]
 
 	if ok {
-		err = eventFunc(s, ws, event.Data)
+		err = eventFunc.HandleData(s, ws, event.Data)
 		if err != nil {
 			return err
 		}
@@ -85,12 +82,7 @@ func (s *Server) AddUser(ws *websocket.Conn) error {
 		return err
 	}
 
-	err = s.Sender.UserLogged(ws, s.Users[ws])
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return s.Sender.UserLogged(ws, s.Users[ws])
 
 }
 
@@ -102,10 +94,5 @@ func (s *Server) RemoveUser(ws *websocket.Conn) error {
 		delete(s.Users, ws)
 	}
 
-	err := s.Sender.RoomsInfo(s.Users, s.Rooms.Games)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return s.Sender.RoomsInfo(s.Users, s.Rooms.Games)
 }

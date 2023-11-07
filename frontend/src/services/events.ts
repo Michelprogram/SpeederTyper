@@ -2,7 +2,7 @@ import router from "@/routes";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { storeToRefs } from "pinia";
 import { usePlayerStore } from "@/store/player";
-import { useRoomStore } from "@/store/room";
+import { Status, useRoomStore } from "@/store/room";
 
 export enum EventTypes {
   "pong" = "pong",
@@ -13,6 +13,7 @@ export enum EventTypes {
   "room-join-by-username" = "room-join-by-username",
   "game-cant-start" = "game-cant-start",
   "game-can-start" = "game-can-start",
+  "game-end" = "game-end",
 }
 
 type WebSocketEvent = any;
@@ -40,7 +41,7 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
   [EventTypes["username"]]: function (data: WebSocketEvent): void {
     const { currentUser } = storeToRefs(usePlayerStore());
 
-    currentUser.value = data;
+    currentUser.value.username = data;
   },
   [EventTypes["room-join-by-username"]]: function (data: WebSocketEvent): void {
     const roomID = data;
@@ -76,6 +77,11 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
   [EventTypes["game-can-start"]]: function (data: WebSocketEvent): void {
     const { currentRoom } = storeToRefs(useRoomStore());
 
-    currentRoom.value.status = true;
+    currentRoom.value.status = Status.Gaming;
+  },
+  [EventTypes["game-end"]]: function (data: WebSocketEvent): void {
+    const { currentRoom } = storeToRefs(useRoomStore());
+
+    currentRoom.value.status = Status.Finish;
   },
 };

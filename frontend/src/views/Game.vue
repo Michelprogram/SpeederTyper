@@ -6,11 +6,19 @@ import { computed } from "vue";
 import Bottom from "@/components/game/Bottom.vue";
 import ListUser from "@/components/game/ListUser.vue";
 import Words from "@/components/game/Words.vue";
+import { Status, useRoomStore } from "@/store/room";
+import { storeToRefs } from "pinia";
+
+const { currentRoom } = storeToRefs(useRoomStore());
 
 const idRoom = useRoute().params.id as string;
 
 const copy = computed(() => {
-  navigator.clipboard.writeText(idRoom.toString());
+  try {
+    navigator.clipboard.writeText(idRoom.toString());
+  } catch {
+    console.warn("Clipboard not supported");
+  }
 });
 
 onMounted(() => {
@@ -35,7 +43,10 @@ onUnmounted(() => {
         />
       </p>
     </div>
-    <div class="flex w-5/6 m-auto gap-5 h-96">
+    <div
+      class="flex w-5/6 m-auto gap-5 h-96"
+      v-if="currentRoom.status != Status.Finish"
+    >
       <ListUser />
       <Words />
     </div>

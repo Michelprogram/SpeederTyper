@@ -17,4 +17,4 @@ WORKDIR /root/
 
 COPY --from=builder /app/ .
 
-CMD ./websocket-server
+CMD ./websocket-server -env prod -port $PORT

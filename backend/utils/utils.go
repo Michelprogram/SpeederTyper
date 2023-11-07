@@ -14,10 +14,12 @@ import (
 
 var Env string
 var counter int
+var Port int
 
 func init() {
 
-	flag.StringVar(&Env, "env", "prod", "help for debugging")
+	flag.StringVar(&Env, "env", "prod", "Help for debugging")
+	flag.IntVar(&Port, "port", 3000, "Port the application expose")
 	flag.Parse()
 }
 

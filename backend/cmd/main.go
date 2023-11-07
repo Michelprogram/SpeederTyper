@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/michelprogram/speeder-typer/handlers"
 	"github.com/michelprogram/speeder-typer/server"
 	"github.com/michelprogram/speeder-typer/server/receiver"
@@ -16,7 +17,7 @@ func main() {
 
 	log.Printf("Environnement %s\n", utils.Env)
 
-	log.Println("🚀 Lancement de l'api sur le port 3000...")
+	log.Printf("🚀 Lancement de l'api sur le port %d\n", utils.Port)
 
 	sender := sender.NewSender()
 
@@ -31,7 +32,7 @@ func main() {
 		"typing-game":      &receiver.Typing{},
 		"end-game":         &receiver.EndGame{},
 	}
-	
+
 	websocketServer := server.NewServer(sender, events)
 
 	http.Handle("/ws", websocket.Handler(func(ws *websocket.Conn) {
@@ -41,7 +42,9 @@ func main() {
 		}
 	}))
 
-	err := http.ListenAndServe(":3000", nil)
+	expose := fmt.Sprintf(":%d", utils.Port)
+
+	err := http.ListenAndServe(expose, nil)
 	if err != nil {
 		panic(err.Error())
 	}

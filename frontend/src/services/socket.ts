@@ -57,9 +57,18 @@ class WebSocketService {
   }
 }
 
-const URL =
-  window.location.hostname == "localhost"
-    ? "ws://localhost:3000/ws"
-    : "ws://10.101.0.122:3000/ws";
+const url = `ws://${
+  import.meta.env.DEV
+    ? "localhost:3000"
+    : "websocket-typer-3e4343a5a6b9.herokuapp.com"
+}/ws`;
 
-export const webSocketService = new WebSocketService(URL);
+let webSocketService: WebSocketService;
+
+try {
+  webSocketService = new WebSocketService(url);
+} catch (e) {
+  console.warn("Can't connect to the web socket");
+}
+
+export { webSocketService };

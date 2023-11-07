@@ -14,3 +14,4 @@ jobs:
           heroku_app_name: "websocket-typer"
           heroku_email: "gaurondorian@gmail.com"
           usedocker: true
+          appdir: "backend"

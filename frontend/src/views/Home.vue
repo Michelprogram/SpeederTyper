@@ -85,7 +85,11 @@ const store = usePlayerStore();
             <p
               class="text-sm text-gray-500 flex items-baseline gap-3 justify-start"
             >
-              <font-awesome-icon icon="fa-solid fa-signal" />
+              <font-awesome-icon
+                icon="fa-solid fa-signal"
+                v-if="state.connected"
+              />
+              <font-awesome-icon icon="fa-solid fa-xmark" v-else />
               Online content
             </p>
             <div class="text-gray-900 font-bold text-xl mb-2">

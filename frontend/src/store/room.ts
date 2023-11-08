@@ -21,8 +21,18 @@ export type Player = {
   isReady: boolean;
 };
 
+export type Score = {
+  wordCompleted: number;
+  letterCompleted: number;
+  characterPerSecond: number;
+  classment: number;
+  username: string;
+};
+
 export const useRoomStore = defineStore("room", () => {
   const rooms = ref(new Array<Room>());
+
+  const scores = ref(new Array<Score>());
 
   const currentRoom = ref<Room>({
     id: "",
@@ -57,6 +67,7 @@ export const useRoomStore = defineStore("room", () => {
   return {
     players,
     firstPlayers,
+    scores,
     playerReady,
     orderedRooms,
     currentRoom,

@@ -5,6 +5,7 @@ import (
 	"github.com/michelprogram/speeder-typer/rooms"
 	"github.com/michelprogram/speeder-typer/server"
 	"golang.org/x/net/websocket"
+	"time"
 )
 
 type EndGame struct{}
@@ -26,6 +27,7 @@ func (e EndGame) HandleData(s *server.Server, _ *websocket.Conn, data json.RawMe
 	defer s.Sender.GameEnd(game)
 
 	game.SetStatus(rooms.Finish)
+	game.SetEndAt(time.Now())
 
 	return nil
 }

@@ -40,14 +40,8 @@ func RandomUsername() string {
 
 	rand.Seed(time.Now().UnixNano())
 	min := 0
-	max := SIZE
 
-	username := ""
-
-	for i := 0; i < 1; i++ {
-		index := rand.Intn(max-min+1) + min
-		username += USERNAMES[index]
-	}
+	username := fmt.Sprintf("%s %s", PROGRAMMING_NAME[rand.Intn(SIZE-min+1)+min], ADJECTIVES[rand.Intn(SIZE_2-min+1)+min])
 
 	return username
 }
@@ -75,7 +69,7 @@ func FetchRandomText() (sentence string, _ error) {
 	min := 0
 	max := len(randomWordGenerator.Data)
 
-	for i := 0; i < 9; i++ {
+	for i := 0; i < 2; i++ {
 		index := rand.Intn(max-min+1) + min
 
 		sentence = fmt.Sprintf("%s %s", sentence, randomWordGenerator.Data[index].Word.Value)

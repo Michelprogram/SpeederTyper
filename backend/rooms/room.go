@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/michelprogram/speeder-typer/types"
 	"sync"
+	"time"
 )
 
 type Rooms struct {
@@ -71,7 +72,12 @@ func (r *Rooms) LeaveRoom(username string, key string) {
 	r.RLock()
 	defer r.RUnlock()
 
-	game := r.Games[key]
+	game, ok := r.Games[key]
+
+	//Leave room because gamed ended
+	if !ok {
+		return
+	}
 
 	size := game.UserLeft(username)
 
@@ -117,7 +123,12 @@ func (r *Rooms) IsUserInRoom(username string, key string) *types.User {
 	r.RLock()
 	defer r.RUnlock()
 
-	game := r.Games[key]
+	game, ok := r.Games[key]
+
+	//If user refresh page
+	if !ok {
+		return nil
+	}
 
 	return game.IsUserInGame(username)
 }
@@ -155,6 +166,7 @@ func (r *Rooms) StartGame(key string) {
 	}
 
 	game.SetStatus(Gaming)
+	game.SetStartAt(time.Now())
 }
 
 func (r *Rooms) GetGame(key string) *Game {

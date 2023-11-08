@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { webSocketService as socket } from "@/services/socket";
-import { useRoomStore } from "@/store/room";
+import { Status, useRoomStore } from "@/store/room";
 import { usePlayerStore } from "@/store/player";
 import { storeToRefs } from "pinia";
 import { watch, ref, onMounted, computed } from "vue";
@@ -32,7 +32,7 @@ watch(waiting, () => {
 });
 
 const typer = (event: KeyboardEvent) => {
-  if (waiting.value) return;
+  if (currentRoom.value.status !== Status.Gaming && waiting.value) return;
 
   const letter = event.key;
   const position = currentUser.value.position;
@@ -67,7 +67,6 @@ const forwardLetter = (element: HTMLSpanElement) => {
       name: "end-game",
       data: {
         id: currentRoom.value.id,
-        username: currentUser.value.username,
       },
     });
   }

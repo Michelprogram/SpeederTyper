@@ -25,7 +25,7 @@ onBeforeUnmount(() => {
       <RouterLink to="/">
         <p class="cursor-pointer">HOME</p>
       </RouterLink>
-      <p class="cursor-pointer">OUR TEAM</p>
+      <p class="cursor-pointer">HOW DOES IT WORK</p>
       <Button>
         <a href="https://dorian-gauron.com" target="_blank">Contact</a>
       </Button>

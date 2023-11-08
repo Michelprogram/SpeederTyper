@@ -6,10 +6,7 @@ import { computed } from "vue";
 import Bottom from "@/components/game/Bottom.vue";
 import ListUser from "@/components/game/ListUser.vue";
 import Words from "@/components/game/Words.vue";
-import { Status, useRoomStore } from "@/store/room";
-import { storeToRefs } from "pinia";
-
-const { currentRoom } = storeToRefs(useRoomStore());
+import Score from "@/components/game/Score.vue";
 
 const idRoom = useRoute().params.id as string;
 
@@ -31,6 +28,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <Score />
   <div class="font-mono flex flex-col gap-5">
     <div class="text-center">
       <h1 class="text-6xl font-bold tracking-wider">Speeder typer</h1>
@@ -43,10 +41,7 @@ onUnmounted(() => {
         />
       </p>
     </div>
-    <div
-      class="flex w-5/6 m-auto gap-5 h-96"
-      v-if="currentRoom.status != Status.Finish"
-    >
+    <div class="flex w-5/6 m-auto gap-5 h-96">
       <ListUser />
       <Words />
     </div>

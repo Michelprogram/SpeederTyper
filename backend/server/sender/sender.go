@@ -74,11 +74,9 @@ func (s *Sender) GameCantStart(conn *websocket.Conn) error {
 
 func (s *Sender) GameEnd(game *rooms.Game) error {
 
-	//TODO : faire le classement
-
 	response := types.Response{
 		Name: GAME_END,
-		Data: game.Users,
+		Data: rooms.CreateScoresWithGame(game),
 	}
 
 	res, err := json.Marshal(response)

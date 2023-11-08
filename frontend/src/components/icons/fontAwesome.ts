@@ -10,10 +10,11 @@ import {
   faCopy,
   faArrowRight,
   faBars,
-  faSignal
+  faSignal,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
 /* add icons to the library */
-library.add(faPlus, faCopy, faArrowRight, faBars,faSignal);
+library.add(faPlus, faCopy, faArrowRight, faBars, faSignal, faXmark);
 
 export default FontAwesomeIcon;

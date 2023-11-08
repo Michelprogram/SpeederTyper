@@ -3,6 +3,8 @@ package rooms
 import (
 	"github.com/michelprogram/speeder-typer/types"
 	"github.com/michelprogram/speeder-typer/utils"
+	"log"
+	"time"
 )
 
 const (
@@ -17,6 +19,8 @@ type Game struct {
 	Text      string        `json:"text"`
 	Id        string        `json:"id"`
 	Status    int           `json:"status"`
+	StartAt   time.Time     `json:"-"`
+	EndAt     time.Time     `json:"-"`
 }
 
 func NewGame(id string, username string) (*Game, error) {
@@ -64,6 +68,9 @@ func (g Game) GetUsers() []*types.User {
 }
 
 func (g *Game) IsUserInGame(username string) *types.User {
+
+	log.Println(len(g.Users))
+
 	for _, user := range g.Users {
 		if user.Username == username {
 			return user
@@ -117,4 +124,12 @@ func (g Game) FindUserByUsername(username string) *types.User {
 	}
 
 	return nil
+}
+
+func (g *Game) SetStartAt(time time.Time) {
+	g.StartAt = time
+}
+
+func (g *Game) SetEndAt(time time.Time) {
+	g.EndAt = time
 }

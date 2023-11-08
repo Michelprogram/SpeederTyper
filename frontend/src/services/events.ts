@@ -77,9 +77,10 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
 
     currentRoom.value.status = Status.Gaming;
   },
-  [EventTypes["game-end"]]: function (_: WebSocketEvent): void {
-    const { currentRoom } = storeToRefs(useRoomStore());
+  [EventTypes["game-end"]]: function (data: WebSocketEvent): void {
+    const { scores, currentRoom } = storeToRefs(useRoomStore());
 
+    scores.value = data;
     currentRoom.value.status = Status.Finish;
   },
 };

@@ -31,7 +31,7 @@ const startGame = () => {
 watch(readyMode, (newVal: boolean) => {
   socket.sendMessage({
     name: "set-ready",
-    data: { id: idRoom, username: currentUser.value.username, ready: newVal + "" },
+    data: { id: idRoom, username: currentUser.value.username, ready: newVal },
   });
 });
 </script>

@@ -4,33 +4,26 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 
-import Home from "@/views/Home.vue";
-import Rooms from "@/views/Rooms.vue";
-import Offline from "@/views/Offline.vue";
-import Game from "@/views/Game.vue";
-
-//const PREFIX = "/postman-like";
-
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Home",
-    component: Home,
+    component: () => import("@/views/Home.vue"),
   },
   {
     path: "/join",
     name: "Rooms",
-    component: Rooms,
+    component: () => import("@/views/Rooms.vue"),
   },
   {
     path: "/offline",
     name: "Offline",
-    component: Offline,
+    component: () => import("@/views/Offline.vue"),
   },
   {
     path: "/game/:id",
     name: "Game",
-    component: Game,
+    component: () => import("@/views/Game.vue"),
   },
 ];
 

@@ -13,4 +13,14 @@ export default defineConfig({
     cors: true,
     port: 8080,
   },
+  build: {
+    rollupOptions: {
+      treeshake: "recommended",
+      output: {
+        manualChunks: {
+          vue: ["vue", "vue-router", "pinia"],
+        },
+      },
+    },
+  },
 });

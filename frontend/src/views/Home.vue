@@ -97,15 +97,16 @@ const store = usePlayerStore();
               Challenge your friends or random through rooms. Check your
               capabilities to typing in real world application context.
             </p>
-            <Button
-              :class="`flex items-center w-fit mt-4 ${
+            <RouterLink
+              to="/join"
+              :class="
                 state.connected
                   ? ''
                   : 'cursor-not-allowed opacity-25 pointer-events-none'
-              }`"
+              "
             >
-              <RouterLink to="/join"> Join room </RouterLink>
-            </Button>
+              <Button class="flex items-center w-fit mt-4"> Join room </Button>
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -121,9 +122,9 @@ const store = usePlayerStore();
             Challenge yourself in infinity mode, and deal with yourself.
           </p>
         </div>
-        <Button>
-          <RouterLink to="/offline">Start a game offline</RouterLink>
-        </Button>
+        <RouterLink to="/offline"
+          ><Button>Start a game offline</Button>
+        </RouterLink>
       </div>
       <div class="max-w-sm rounded overflow-hidden col-span-1 row-span-1">
         <img
@@ -137,9 +138,9 @@ const store = usePlayerStore();
             You'd like to see who are the top players ?
           </p>
         </div>
-        <Button>
-          <RouterLink to="/">Scoreboard</RouterLink>
-        </Button>
+        <RouterLink to="/">
+          <Button>Scoreboard</Button>
+        </RouterLink>
       </div>
     </div>
   </div>

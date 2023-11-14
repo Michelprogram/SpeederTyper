@@ -3,6 +3,7 @@ import { webSocketService as socket } from "@/services/socket";
 import { Status, useRoomStore } from "@/store/room";
 import { usePlayerStore } from "@/store/player";
 import { storeToRefs } from "pinia";
+import { Space } from "lucide-vue-next";
 import { watch, ref, onMounted, computed } from "vue";
 
 const { currentRoom, playerReady } = storeToRefs(useRoomStore());
@@ -20,7 +21,7 @@ watch(
   () => {
     countDown = setInterval(() => {
       time.value -= 1;
-      if (time.value == 0) {
+      if (time.value === 0) {
         waiting.value = false;
       }
     }, 1000);
@@ -41,7 +42,7 @@ const typer = (event: KeyboardEvent) => {
     `#letter-${position}`
   ) as HTMLSpanElement;
 
-  if (letter == characterAtPosition) {
+  if (letter === characterAtPosition) {
     forwardLetter(letterElement);
   } else {
     wrongLetter(letterElement);
@@ -62,7 +63,7 @@ const forwardLetter = (element: HTMLSpanElement) => {
 
   currentUser.value.position++;
 
-  if (currentUser.value.position == currentRoom.value.text.length) {
+  if (currentUser.value.position === currentRoom.value.text.length) {
     socket.sendMessage({
       name: "end-game",
       data: {
@@ -119,13 +120,15 @@ onMounted(() => {
     </div>
     <div v-else>
       <div class="p-5">
-        <p class="">
+        <p class="break-words inline-flex items-end">
           <span
             v-for="(letter, index) in currentRoom.text"
             :key="index"
             :id="'letter-' + index"
-            >{{ letter }}</span
           >
+            <Space v-if="letter === ' '" class="ml-2 mr-2" />
+            <span v-else>{{ letter }}</span>
+          </span>
         </p>
         <p>{{ myOwnPercentage }}%</p>
       </div>

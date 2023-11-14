@@ -41,6 +41,8 @@ func NewGame(id string, username string) (*Game, error) {
 }
 
 func (g *Game) UserJoin(user *types.User) {
+	user.SetIsReady(false)
+	user.SetPosition(0)
 	g.Users = append(g.Users, user)
 }
 

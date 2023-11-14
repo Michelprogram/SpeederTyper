@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { state, webSocketService } from "@/services/socket";
 import { Button } from "@/components/ui/button";
-
 import {
   Select,
   SelectContent,
@@ -10,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import { Plus, Signal } from "lucide-vue-next";
 
 import { usePlayerStore } from "@/store/player";
 
@@ -83,13 +84,10 @@ const store = usePlayerStore();
         >
           <div>
             <p
-              class="text-sm text-gray-500 flex items-baseline gap-3 justify-start"
+              class="text-sm text-gray-500 flex items-center gap-3 justify-start"
             >
-              <font-awesome-icon
-                icon="fa-solid fa-signal"
-                v-if="state.connected"
-              />
-              <font-awesome-icon icon="fa-solid fa-xmark" v-else />
+              <Signal :size="20" v-if="state.connected" />
+              <Plus v-else :size="20" class="rotate-45" />
               Online content
             </p>
             <div class="text-gray-900 font-bold text-xl mb-2">

@@ -46,7 +46,7 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
   [EventTypes["room-join-by-username"]]: function (data: WebSocketEvent): void {
     const roomID = data;
 
-    if (roomID == "-1") {
+    if (roomID === "-1") {
       const { toast } = useToast();
 
       toast({

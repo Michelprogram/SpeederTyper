@@ -16,7 +16,7 @@ const { currentUser } = storeToRefs(usePlayerStore());
 const { currentRoom } = storeToRefs(useRoomStore());
 
 const isOwner = computed((): boolean => {
-  return currentRoom.value.created_by == currentUser.value.username;
+  return currentRoom.value.created_by === currentUser.value.username;
 });
 
 const startGame = () => {

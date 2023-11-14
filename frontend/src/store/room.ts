@@ -43,9 +43,9 @@ export const useRoomStore = defineStore("room", () => {
   });
 
   const players = (id: string): Array<string> => {
-    const room = rooms.value.find((r) => r.id == id);
+    const room = rooms.value.find((r) => r.id === id);
 
-    if (room == undefined) return [];
+    if (room === undefined) return [];
 
     return room.users.map((p) => p.username);
   };
@@ -55,12 +55,12 @@ export const useRoomStore = defineStore("room", () => {
   };
 
   const orderedRooms = computed((): Array<Room> => {
-    if (rooms.value == undefined) return [];
+    if (rooms.value === undefined) return [];
     return rooms.value.sort((a, b) => (a > b ? 1 : -1));
   });
 
   const playerReady = computed((): Array<Player> => {
-    if (currentRoom.value.users == undefined) return [];
+    if (currentRoom.value.users === undefined) return [];
     return currentRoom.value.users.filter((u) => u.isReady);
   });
 

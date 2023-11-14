@@ -26,6 +26,10 @@ func (u *User) SetIsReady(isready bool) {
 	u.IsReady = isready
 }
 
+func (u *User) SetPosition(position int) {
+	u.Position = position
+}
+
 type ByPosition []*User
 
 func (a ByPosition) Len() int           { return len(a) }

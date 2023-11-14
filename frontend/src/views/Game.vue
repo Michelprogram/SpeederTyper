@@ -7,6 +7,7 @@ import Bottom from "@/components/game/Bottom.vue";
 import ListUser from "@/components/game/ListUser.vue";
 import Words from "@/components/game/Words.vue";
 import Score from "@/components/game/Score.vue";
+import { Copy } from "lucide-vue-next";
 
 const idRoom = useRoute().params.id as string;
 
@@ -28,17 +29,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Score />
   <div class="font-mono flex flex-col gap-5">
+    <Score />
     <div class="text-center">
       <h1 class="text-6xl font-bold tracking-wider">Speeder typer</h1>
-      <p class="mt-5">
+      <p class="mt-5 flex justify-center items-center">
         <span class="m-3 text-xs">{{ $route.params.id }}</span>
-        <font-awesome-icon
-          icon="fa-copy"
-          class="cursor-pointer"
-          @click="copy"
-        />
+        <Copy class="cursor-pointer" :click="copy" :size="20" />
       </p>
     </div>
     <div class="flex w-5/6 m-auto gap-5 h-96">

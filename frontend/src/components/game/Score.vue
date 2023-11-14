@@ -35,6 +35,8 @@ const resetCurrentRoom = () => {
     users: new Array<Player>(),
   };
 
+  //Reset user with websocket
+
   router.push({ name: "Rooms" });
 };
 </script>

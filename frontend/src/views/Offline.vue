@@ -29,7 +29,7 @@ const backLetter = () => {
 
   const element = document.querySelector(`#${ids[index.value]}`);
 
-  if (element == null) return;
+  if (element === null) return;
 
   element.classList.remove("text-lime-400");
 };
@@ -38,7 +38,7 @@ const forwardLetter = () => {
   const element = document.querySelector(`#${ids[index.value]}`);
   const wrongLetter = document.querySelector(".text-red-400");
 
-  if (element == null) return;
+  if (element === null) return;
 
   if (wrongLetter != null) wrongLetter.classList.remove("text-red-400");
 
@@ -49,7 +49,7 @@ const forwardLetter = () => {
 const wrongLetter = () => {
   const element = document.querySelector(`#${ids[index.value]}`);
 
-  if (element == null) return;
+  if (element === null) return;
 
   element.classList.add("text-red-400");
 };
@@ -60,9 +60,9 @@ const keyDownHandler = (ev: KeyboardEvent) => {
   const element = document.querySelector(`#${ids[index.value]}`);
   const keyPressed = ev.key;
 
-  if (element == null) return;
+  if (element === null) return;
 
-  if (keyPressed == "Backspace" && index.value > 0) {
+  if (keyPressed === "Backspace" && index.value > 0) {
     backLetter();
   } else if (element.textContent === keyPressed) {
     forwardLetter();

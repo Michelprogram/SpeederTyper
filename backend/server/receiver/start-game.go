@@ -2,6 +2,7 @@ package receiver
 
 import (
 	"encoding/json"
+	"github.com/michelprogram/speeder-typer/github"
 	"github.com/michelprogram/speeder-typer/server"
 	"golang.org/x/net/websocket"
 )
@@ -21,13 +22,20 @@ func (sg StartGame) HandleData(s *server.Server, ws *websocket.Conn, data json.R
 	canStartGame := s.Rooms.IsEveryoneReady(idRoom.Id)
 
 	//Si pas ready on informe que le creator
-
 	if !canStartGame {
 		return s.Sender.GameCantStart(ws)
 	}
 
 	//Si ready on informe tout le monde
 	game := s.Rooms.GetGame(idRoom.Id)
+
+	text, err := github.FetchRandomCode(game.Users, s.Sender)
+	if err != nil {
+		return err
+	}
+
+	game.SetText(text)
+
 	defer s.Sender.RoomInfo(game)
 	defer s.Sender.RoomsInfo(s.Users, s.Rooms.Games)
 

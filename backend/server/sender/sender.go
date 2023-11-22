@@ -17,6 +17,8 @@ var (
 	ROOM_CREATED          = "room-created"
 	ROOM_JOIN_BY_USERNAME = "room-join-by-username"
 
+	TEXT_INFO = "text-info"
+
 	USERNAME = "username"
 	PONG     = "pong"
 )
@@ -96,6 +98,7 @@ func (s *Sender) GameEnd(game *rooms.Game) error {
 	return nil
 
 }
+
 func (s *Sender) RoomInfo(game *rooms.Game) error {
 
 	response := types.Response{
@@ -173,4 +176,27 @@ func (s *Sender) UserLogged(ws *websocket.Conn, username string) error {
 	}
 
 	return s.JsonResponse(ws, response)
+}
+
+func (s *Sender) CodeInfo(users []*types.User, textinfo server.TextInfo) error {
+	response := types.Response{
+		Name: ROOM_INFO,
+		Data: textinfo,
+	}
+
+	res, err := json.Marshal(response)
+
+	if err != nil {
+		return err
+	}
+
+	for _, user := range users {
+
+		_, err = user.Ws.Write(res)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

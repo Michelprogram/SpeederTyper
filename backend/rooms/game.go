@@ -2,7 +2,6 @@ package rooms
 
 import (
 	"github.com/michelprogram/speeder-typer/types"
-	"github.com/michelprogram/speeder-typer/utils"
 	"log"
 	"time"
 )
@@ -23,21 +22,15 @@ type Game struct {
 	EndAt     time.Time     `json:"-"`
 }
 
-func NewGame(id string, username string) (*Game, error) {
-
-	text, err := utils.FetchRandomText()
-
-	if err != nil {
-		return nil, err
-	}
+func NewGame(id string, username string) *Game {
 
 	return &Game{
 		Users:     make([]*types.User, 0),
 		CreatedBy: username,
-		Text:      text,
+		Text:      "",
 		Id:        id,
 		Status:    Waiting,
-	}, nil
+	}
 }
 
 func (g *Game) UserJoin(user *types.User) {
@@ -134,4 +127,8 @@ func (g *Game) SetStartAt(time time.Time) {
 
 func (g *Game) SetEndAt(time time.Time) {
 	g.EndAt = time
+}
+
+func (g *Game) SetText(text string) {
+	g.Text = text
 }

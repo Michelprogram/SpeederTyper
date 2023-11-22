@@ -17,6 +17,7 @@ type EventSender interface {
 	JoinedRoomByUsername(conn *websocket.Conn, id string) error
 	JsonResponse(ws *websocket.Conn, response types.Response) error
 	UserLogged(ws *websocket.Conn, username string) error
+	CodeInfo(users []*types.User, textinfo TextInfo) error
 }
 
 type EventJson struct {
@@ -26,4 +27,11 @@ type EventJson struct {
 
 type EventDataHandler interface {
 	HandleData(s *Server, ws *websocket.Conn, data json.RawMessage) error
+}
+
+type TextInfo struct {
+	RepoUrl  string `json:"repo_url"`
+	RepoName string `json:"repo_name"`
+	Language string `json:"language"`
+	FileName string `json:"file_name"`
 }

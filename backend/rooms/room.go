@@ -45,11 +45,7 @@ func (r *Rooms) CreateRoom(user *types.User, key string) error {
 	r.RLock()
 	defer r.RUnlock()
 
-	game, err := NewGame(key, user.Username)
-
-	if err != nil {
-		return err
-	}
+	game := NewGame(key, user.Username)
 
 	game.UserJoin(user)
 

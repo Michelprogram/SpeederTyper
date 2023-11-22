@@ -7,10 +7,9 @@ import (
 	"github.com/michelprogram/speeder-typer/server/receiver"
 	"github.com/michelprogram/speeder-typer/server/sender"
 	"github.com/michelprogram/speeder-typer/utils"
+	"golang.org/x/net/websocket"
 	"log"
 	"net/http"
-
-	"golang.org/x/net/websocket"
 )
 
 func main() {

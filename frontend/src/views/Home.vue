@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { state, webSocketService } from "@/services/socket";
+import { state, webSocketService as websocket } from "@/services/socket";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -11,11 +11,14 @@ import {
 } from "@/components/ui/select";
 
 import { Plus, Signal } from "lucide-vue-next";
-
+import { storeToRefs } from "pinia";
 import { usePlayerStore } from "@/store/player";
+import { onMounted } from "vue";
+
+const { players, gamePlayed, orderedPlayers } = storeToRefs(usePlayerStore());
 
 const joinRoomByUser = (user: string) => {
-  webSocketService.sendMessage({
+  websocket.sendMessage({
     name: "join-by-username",
     data: {
       username: user,
@@ -23,7 +26,11 @@ const joinRoomByUser = (user: string) => {
   });
 };
 
-const store = usePlayerStore();
+onMounted(() => {
+  websocket.sendMessage({
+    name: "stats-app",
+  });
+});
 </script>
 
 <template>
@@ -39,13 +46,15 @@ const store = usePlayerStore();
       <div class="flex">
         <div class="flex flex-col gap-2">
           <span class="font-bold text-3xl text-orange-600">{{
-            store.players.length
+            players === undefined ? 0 : players.length
           }}</span>
           <p class="w-2/3 font-bold">Number of player connected</p>
         </div>
         <div class="flex flex-col gap-2">
-          <span class="font-bold text-3xl text-orange-600">200</span>
-          <p class="w-2/3 font-bold">Game played since</p>
+          <span class="font-bold text-3xl text-orange-600">{{
+            gamePlayed
+          }}</span>
+          <p class="w-2/3 font-bold">Game played since last deploy</p>
         </div>
       </div>
       <div class="w-2/3">
@@ -56,7 +65,7 @@ const store = usePlayerStore();
           <SelectContent>
             <SelectGroup>
               <SelectItem
-                v-for="user in store.players"
+                v-for="user in orderedPlayers"
                 :value="user"
                 @click="joinRoomByUser(user)"
               >
@@ -122,9 +131,11 @@ const store = usePlayerStore();
             Challenge yourself in infinity mode, and deal with yourself.
           </p>
         </div>
-        <RouterLink to="/offline"
-          ><Button>Start a game offline</Button>
-        </RouterLink>
+        <!--         <RouterLink to="/offline">
+ -->
+        <Button disabled>Start a game offline</Button>
+        <!--         </RouterLink>
+ -->
       </div>
       <div class="max-w-sm rounded overflow-hidden col-span-1 row-span-1">
         <img
@@ -138,9 +149,11 @@ const store = usePlayerStore();
             You'd like to see who are the top players ?
           </p>
         </div>
-        <RouterLink to="/">
-          <Button>Scoreboard</Button>
-        </RouterLink>
+        <!--         <RouterLink to="/">
+ -->
+        <Button disabled>Scoreboard</Button>
+        <!--         </RouterLink>
+ -->
       </div>
     </div>
   </div>

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"math/rand"
 	"regexp"
+	"strings"
 )
 
 type Typescript struct {
@@ -15,12 +16,12 @@ var _ ParserFunctionCode = (*Typescript)(nil)
 func (g Typescript) FilterFile(trees []Tree) []string {
 	var res []string
 	extension := ".ts"
-
-	sizeExtension := len(extension)
+	cypress := ".cy.ts"
+	test := ".test.ts"
 
 	for _, tree := range trees {
 
-		if tree.Path[len(tree.Path)-sizeExtension:] == extension {
+		if strings.HasSuffix(tree.Path, extension) && !strings.HasSuffix(tree.Path, cypress) && !strings.HasSuffix(tree.Path, test) {
 			res = append(res, tree.Path)
 		}
 	}
@@ -38,7 +39,7 @@ func (g Typescript) GetExtension() string {
 
 func (g Typescript) Parser(text []byte) ([]byte, error) {
 
-	regex := regexp.MustCompile("function")
+	regex := regexp.MustCompile("function ")
 
 	matches := regex.FindAllIndex(text, -1)
 

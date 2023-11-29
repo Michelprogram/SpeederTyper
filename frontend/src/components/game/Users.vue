@@ -2,16 +2,26 @@
 import { Progress } from "@/components/ui/progress";
 import { useRoomStore } from "@/store/room";
 import { storeToRefs } from "pinia";
-import { computed, ref } from "vue";
+import { computed } from "vue";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 const { currentRoom } = storeToRefs(useRoomStore());
 
 const percentage = (position: number): number => {
+  if (position === 0) return 0;
   return Number.parseFloat(
     ((position / currentRoom.value.text.length) * 100).toFixed(2)
   );
 };
 
-const users = ref(currentRoom.value.users);
+const displayName = (username: string) => {
+  return username.slice(0, 8) + "...";
+};
 
 const usersSortedByPercentage = computed(() => {
   const users = currentRoom.value.users;
@@ -24,7 +34,7 @@ const usersSortedByPercentage = computed(() => {
 <template>
   <div class="border-2 border-solid border-secondary rounded-xl w-1/4">
     <h4 class="mb-4 mt-4 text-xl font-medium leading-none text-center">
-      Players - {{ users.length }}
+      Players - {{ currentRoom.users.length }}
     </h4>
     <div class="flex flex-col items-center">
       <TransitionGroup name="player-list">
@@ -40,7 +50,16 @@ const usersSortedByPercentage = computed(() => {
                     isReady ? 'bg-green-400' : 'bg-red-400'
                   }`"
                 ></span>
-                <span>{{ username }}</span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger class="italic">{{
+                      displayName(username)
+                    }}</TooltipTrigger>
+                    <TooltipContent>
+                      <p>{{ username }}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </p>
               <Progress
                 class="h-2"

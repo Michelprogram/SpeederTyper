@@ -157,16 +157,14 @@
     <p class="font-bold w-2/3 text-5xl text-center m-10 leading-tight">
       Why Speeder Typer ?
     </p>
-    <div class="w-3/4 flex items-center text-center">
-      <p class="w-3/5">
+    <div class="w-3/4 text-center">
+      <p>
         Improve your debugging skills by typing out error-ridden code snippets
-        faster than your opponent can say "syntax error."
-      </p>
-      <p class="w-2/5">
-        Connect with fellow developers worldwide and build your coding game. You
-        never know when you might meet your future coding buddy or tech
-        co-founder! So what are you waiting for? Join SpeedyTyper today and
-        experience the thrill of a real-time coding race. Happy typing!
+        faster than your opponent can say "syntax error." Connect with fellow
+        developers worldwide, you never know when you might meet your future
+        coding buddy or tech co-founder! So what are you waiting for? Join
+        SpeedyTyper today and experience the thrill of a real-time coding race.
+        Happy typing!
       </p>
     </div>
 

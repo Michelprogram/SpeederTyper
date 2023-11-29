@@ -1,12 +1,9 @@
 package utils
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"math/rand"
-	"net/http"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,6 +12,7 @@ import (
 var Env string
 var counter int
 var Port int
+var GAME_PLAYED = 0
 
 func init() {
 
@@ -44,37 +42,4 @@ func RandomUsername() string {
 	username := fmt.Sprintf("%s %s", PROGRAMMING_NAME[rand.Intn(SIZE-min+1)+min], ADJECTIVES[rand.Intn(SIZE_2-min+1)+min])
 
 	return username
-}
-
-func FetchRandomText() (sentence string, _ error) {
-	response, err := http.Get("https://randomwordgenerator.com/json/words_ws.json")
-	if err != nil {
-		return "", err
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-	if err != nil {
-		return "", err
-	}
-
-	var randomWordGenerator RandomWordGenerator
-	err = json.Unmarshal(body, &randomWordGenerator)
-	if err != nil {
-		return "", err
-	}
-
-	rand.Seed(time.Now().UnixNano())
-
-	min := 0
-	max := len(randomWordGenerator.Data)
-
-	for i := 0; i < 2; i++ {
-		index := rand.Intn(max-min+1) + min
-
-		sentence = fmt.Sprintf("%s %s", sentence, randomWordGenerator.Data[index].Word.Value)
-	}
-
-	//Remove first space
-	return sentence[1:], nil
 }

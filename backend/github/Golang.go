@@ -5,6 +5,7 @@ import (
 	"errors"
 	"math/rand"
 	"regexp"
+	"strings"
 )
 
 type Golang struct {
@@ -15,14 +16,11 @@ var _ ParserFunctionCode = (*Golang)(nil)
 func (g Golang) FilterFile(trees []Tree) []string {
 	var res []string
 	extension := ".go"
-	extensionTestFile := "_test.go"
-
-	sizeExtension := len(extension)
-	sizeTestFile := len(extensionTestFile)
+	test := "_test.go"
 
 	for _, tree := range trees {
 
-		if tree.Path[len(tree.Path)-sizeExtension:] == extension && tree.Path[len(tree.Path)-sizeTestFile:] != extensionTestFile {
+		if strings.HasSuffix(tree.Path, extension) && !strings.HasSuffix(tree.Path, test) {
 			res = append(res, tree.Path)
 		}
 	}
@@ -39,7 +37,7 @@ func (g Golang) GetExtension() string {
 }
 
 func (g Golang) Parser(text []byte) ([]byte, error) {
-	regex := regexp.MustCompile("func")
+	regex := regexp.MustCompile("func ")
 
 	matches := regex.FindAllIndex(text, -1)
 

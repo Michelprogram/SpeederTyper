@@ -1,11 +1,7 @@
+import { Status } from "@/services/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-
-export enum Status {
-  Waiting = 0,
-  Gaming = 1,
-  Finish = 3,
-}
+import { Player } from "./player";
 
 export type Room = {
   id: string;
@@ -13,12 +9,6 @@ export type Room = {
   created_by: string;
   status: Status;
   users: Array<Player>;
-};
-
-export type Player = {
-  username: string;
-  position: number;
-  isReady: boolean;
 };
 
 export type Score = {
@@ -31,6 +21,8 @@ export type Score = {
 
 export const useRoomStore = defineStore("room", () => {
   const rooms = ref(new Array<Room>());
+
+  const textSize = ref<number>(0);
 
   const scores = ref(new Array<Score>());
 
@@ -67,6 +59,7 @@ export const useRoomStore = defineStore("room", () => {
   return {
     players,
     firstPlayers,
+    textSize,
     scores,
     playerReady,
     orderedRooms,

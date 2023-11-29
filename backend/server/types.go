@@ -18,6 +18,7 @@ type EventSender interface {
 	JsonResponse(ws *websocket.Conn, response types.Response) error
 	UserLogged(ws *websocket.Conn, username string) error
 	CodeInfo(users []*types.User, textinfo TextInfo) error
+	StatsApp(*websocket.Conn, map[*websocket.Conn]string) error
 }
 
 type EventJson struct {
@@ -30,8 +31,9 @@ type EventDataHandler interface {
 }
 
 type TextInfo struct {
-	RepoUrl  string `json:"repo_url"`
-	RepoName string `json:"repo_name"`
+	RepoUrl  string `json:"repoUrl"`
+	FullUrl  string `json:"fullUrl"`
+	RepoName string `json:"repoName"`
 	Language string `json:"language"`
-	FileName string `json:"file_name"`
+	FileName string `json:"fileName"`
 }

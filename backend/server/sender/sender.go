@@ -5,12 +5,15 @@ import (
 	"github.com/michelprogram/speeder-typer/rooms"
 	"github.com/michelprogram/speeder-typer/server"
 	"github.com/michelprogram/speeder-typer/types"
+	"github.com/michelprogram/speeder-typer/utils"
 	"golang.org/x/net/websocket"
 )
 
 var (
 	GAME_CANT_START = "game-cant-start"
 	GAME_END        = "game-end"
+
+	STATS_APP = "stats-app"
 
 	ROOMS_INFO            = "rooms-info"
 	ROOM_INFO             = "room-info"
@@ -127,19 +130,13 @@ func (s *Sender) RoomsInfo(users map[*websocket.Conn]string, rooms map[string]*r
 
 	stats := make([]*types.RoomInfo, 0)
 
-	var usernames []string
-
 	for key, game := range rooms {
 		stats = append(stats, types.NewRoomInfo(key, game.Status, game.GetUsers()))
 	}
 
-	for _, username := range users {
-		usernames = append(usernames, username)
-	}
-
 	response := types.Response{
 		Name: ROOMS_INFO,
-		Data: NewStats(stats, usernames),
+		Data: NewStats(stats),
 	}
 
 	res, err := json.Marshal(response)
@@ -180,7 +177,7 @@ func (s *Sender) UserLogged(ws *websocket.Conn, username string) error {
 
 func (s *Sender) CodeInfo(users []*types.User, textinfo server.TextInfo) error {
 	response := types.Response{
-		Name: ROOM_INFO,
+		Name: TEXT_INFO,
 		Data: textinfo,
 	}
 
@@ -196,6 +193,39 @@ func (s *Sender) CodeInfo(users []*types.User, textinfo server.TextInfo) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (s *Sender) StatsApp(ws *websocket.Conn, users map[*websocket.Conn]string) error {
+
+	usernames := make([]string, len(users))
+
+	i := 0
+
+	for _, username := range users {
+		usernames[i] = username
+		i++
+	}
+
+	response := types.Response{
+		Name: STATS_APP,
+		Data: StatsApp{
+			Players: usernames,
+			Game:    utils.GAME_PLAYED,
+		},
+	}
+
+	res, err := json.Marshal(response)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = ws.Write(res)
+	if err != nil {
+		return err
 	}
 
 	return nil

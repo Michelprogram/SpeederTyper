@@ -7,21 +7,22 @@ import (
 	"github.com/michelprogram/speeder-typer/server"
 	"github.com/michelprogram/speeder-typer/types"
 	"io"
+	"log"
 	"math/rand"
 	"net/http"
 	"time"
 )
 
 var languages = []ParserFunctionCode{
-	Golang{},
-	Typescript{}, /*
+	/*	Golang{},
+	 */Typescript{}, /*
 		{"Python", "py"},
 		{"Javascript", "js"},*/
 }
 
 var PER_PAGE = 10
 
-func pickAFile(files []string, owner, name string) (string, error) {
+func pickAFile(files []string, owner, name string) (File, error) {
 	var file File
 
 	path := files[rand.Intn(len(files))]
@@ -29,10 +30,10 @@ func pickAFile(files []string, owner, name string) (string, error) {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/%s", owner, name, path)
 	err := getRequestGitHub(url, &file)
 	if err != nil {
-		return "", err
+		return file, err
 	}
 
-	return file.Content, nil
+	return file, nil
 
 }
 
@@ -94,7 +95,7 @@ func FetchRandomCode(users []*types.User, sender server.EventSender) (codes stri
 	branch := repo.DefaultBranch
 
 	textInfo.RepoName = name
-	textInfo.RepoUrl = ""
+	textInfo.RepoUrl = repo.Url
 
 	go sender.CodeInfo(users, textInfo)
 
@@ -107,12 +108,17 @@ func FetchRandomCode(users []*types.User, sender server.EventSender) (codes stri
 	files := language.FilterFile(project.Tree)
 
 	for {
-		text, err := pickAFile(files, owner, name)
+		file, err := pickAFile(files, owner, name)
 		if err != nil {
 			return "", err
 		}
 
-		content, err := base64.StdEncoding.DecodeString(text)
+		textInfo.FileName = file.Name
+		textInfo.FullUrl = file.Url
+
+		go sender.CodeInfo(users, textInfo)
+
+		content, err := base64.StdEncoding.DecodeString(file.Content)
 		if err != nil {
 			return "", err
 		}
@@ -121,8 +127,8 @@ func FetchRandomCode(users []*types.User, sender server.EventSender) (codes stri
 		if err != nil {
 			continue
 		} else {
+			log.Printf("Code : %s\n", string(code))
 			return string(code), nil
-
 		}
 	}
 }

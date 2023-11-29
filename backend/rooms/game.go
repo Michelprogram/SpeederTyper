@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	Waiting int = 0
-	Gaming  int = 1
-	Finish  int = 3
+	Waiting          int = 0
+	Gaming           int = 1
+	GENERATE_TEXTING     = 2
+	Finish           int = 3
 )
 
 type Game struct {

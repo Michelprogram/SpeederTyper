@@ -9,11 +9,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { useRoomStore, Status, Player } from "@/store/room";
-import { usePlayerStore } from "@/store/player";
+import { useRoomStore } from "@/store/room";
+import { Player, usePlayerStore } from "@/store/player";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { Status } from "@/services/types";
 
 const { scores, currentRoom } = storeToRefs(useRoomStore());
 const { currentUser } = storeToRefs(usePlayerStore());

@@ -35,7 +35,6 @@ const joinRoom = (room: Room) => {
     router.push({ name: "Game", params: { id: room.id } });
   }
 };
-console.log("tets");
 </script>
 
 <template>

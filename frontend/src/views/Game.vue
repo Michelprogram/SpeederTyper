@@ -1,22 +1,42 @@
 <script lang="ts" setup>
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import { webSocketService as socket } from "@/services/socket";
 import { useRoute } from "vue-router";
-import { computed } from "vue";
 import Bottom from "@/components/game/Bottom.vue";
-import ListUser from "@/components/game/ListUser.vue";
-import Words from "@/components/game/Words.vue";
+import Title from "@/components/game/Title.vue";
+import Editor from "@/components/game/Editor.vue";
+import Users from "@/components/game/Users.vue";
 import Score from "@/components/game/Score.vue";
-import { Copy } from "lucide-vue-next";
+import TextInfo from "@/components/game/TextInfo.vue";
+import { storeToRefs } from "pinia";
+import { useRoomStore } from "@/store/room";
+import { Status } from "@/services/types";
+
+const { currentRoom, playerReady } = storeToRefs(useRoomStore());
 
 const idRoom = useRoute().params.id as string;
 
-const copy = computed(() => {
-  try {
-    navigator.clipboard.writeText(idRoom.toString());
-  } catch {
-    console.warn("Clipboard not supported");
+const time = ref<number>(5);
+
+const waiting = ref<boolean>(true);
+
+let countDown: NodeJS.Timeout;
+
+watch(
+  () => currentRoom.value.status,
+  (newValue: Status, oldValue: Status) => {
+    console.log(newValue, oldValue);
+    countDown = setInterval(() => {
+      time.value -= 1;
+      if (time.value === 0) {
+        waiting.value = false;
+      }
+    }, 1000);
   }
+);
+
+watch(waiting, () => {
+  clearInterval(countDown);
 });
 
 onMounted(() => {
@@ -31,17 +51,41 @@ onUnmounted(() => {
 <template>
   <div class="font-mono flex flex-col gap-5">
     <Score />
-    <div class="text-center">
-      <h1 class="text-6xl font-bold tracking-wider">Speeder typer</h1>
-      <p class="mt-5 flex justify-center items-center">
-        <span class="m-3 text-xs">{{ $route.params.id }}</span>
-        <Copy class="cursor-pointer" :click="copy" :size="20" />
-      </p>
-    </div>
-    <div class="flex w-5/6 m-auto gap-5 h-96">
-      <ListUser />
-      <Words />
+    <Title />
+    <div class="flex w-10/12 m-auto gap-5 h-fit">
+      <Users />
+      <div
+        class="w-full h-fit border-2 border-solid border-secondary rounded-xl"
+      >
+        <TextInfo />
+        <Transition name="fade">
+          <div class="flex justify-center" v-if="waiting">
+            <p v-if="currentRoom.status == Status.Waiting">
+              Game should start soon, waiting everyone to be ready,
+              {{ playerReady.length }} on {{ currentRoom.users.length }} player
+              are ready.
+            </p>
+            <p v-else>Game should start in {{ time }} secondes.</p>
+          </div>
+          <div class="flex" v-else>
+            <Editor :code="currentRoom.text" />
+          </div>
+        </Transition>
+      </div>
     </div>
     <Bottom />
   </div>
 </template>
+
+<style>
+/* we will explain what these classes do next! */
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>

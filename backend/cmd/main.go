@@ -30,6 +30,7 @@ func main() {
 		"start-game":       &receiver.StartGame{},
 		"typing-game":      &receiver.Typing{},
 		"end-game":         &receiver.EndGame{},
+		"stats-app":        &receiver.StatsApp{},
 	}
 
 	websocketServer := server.NewServer(sender, events)

@@ -2,7 +2,16 @@ import router from "@/routes";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { storeToRefs } from "pinia";
 import { usePlayerStore } from "@/store/player";
-import { Status, useRoomStore } from "@/store/room";
+import { useRoomStore } from "@/store/room";
+import { useTextInfoStore } from "@/store/textinfo";
+import {
+  Status,
+  StatsAppEvent,
+  TextInfoEvent,
+  RoomsInfoEvent,
+  RoomInfoEvent,
+  ScoreEvent,
+} from "./types";
 
 export enum EventTypes {
   "pong" = "pong",
@@ -14,39 +23,29 @@ export enum EventTypes {
   "game-cant-start" = "game-cant-start",
   "game-can-start" = "game-can-start",
   "game-end" = "game-end",
+  "text-info" = "text-info",
+  "stats-app" = "stats-app",
 }
 
-type WebSocketEvent = any;
-
-export type EventListener = (data: WebSocketEvent) => void;
-
-export const eventListeners: { [key in EventTypes]: EventListener } = {
-  [EventTypes.pong]: (data: WebSocketEvent) => {
-    console.log("Message from ping", data);
+export const eventListeners: {
+  [key in EventTypes]: (data: any) => void;
+} = {
+  [EventTypes.pong]: (pong: string) => {
+    console.log("Message from ping", pong);
   },
-  [EventTypes["rooms-info"]]: (data: WebSocketEvent) => {
-    const { players } = storeToRefs(usePlayerStore());
+  [EventTypes["rooms-info"]]: ({ stats }: RoomsInfoEvent) => {
     const { rooms } = storeToRefs(useRoomStore());
-
-    data = JSON.parse(JSON.stringify(data));
-
-    rooms.value = data.stats;
-
-    players.value = data.users;
+    rooms.value = stats;
   },
-  [EventTypes["room-created"]]: function (data: WebSocketEvent): void {
-    const idRoom = JSON.parse(JSON.stringify(data));
-    router.push({ name: "Game", params: { id: idRoom } });
+  [EventTypes["room-created"]]: function (id: string): void {
+    router.push({ name: "Game", params: { id: id } });
   },
-  [EventTypes["username"]]: function (data: WebSocketEvent): void {
+  [EventTypes["username"]]: function (username: string): void {
     const { currentUser } = storeToRefs(usePlayerStore());
-
-    currentUser.value.username = data;
+    currentUser.value.username = username;
   },
-  [EventTypes["room-join-by-username"]]: function (data: WebSocketEvent): void {
-    const roomID = data;
-
-    if (roomID === "-1") {
+  [EventTypes["room-join-by-username"]]: function (id: string): void {
+    if (id === "-1") {
       const { toast } = useToast();
 
       toast({
@@ -57,14 +56,13 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
       return;
     }
 
-    router.push({ name: "Game", params: { id: roomID } });
+    router.push({ name: "Game", params: { id: id } });
   },
-  [EventTypes["room-info"]]: function (data: WebSocketEvent): void {
+  [EventTypes["room-info"]]: function (room: RoomInfoEvent): void {
     const { currentRoom } = storeToRefs(useRoomStore());
-
-    currentRoom.value = data;
+    currentRoom.value = room;
   },
-  [EventTypes["game-cant-start"]]: function (_: WebSocketEvent): void {
+  [EventTypes["game-cant-start"]]: function (_: any): void {
     const { toast } = useToast();
 
     toast({
@@ -72,15 +70,25 @@ export const eventListeners: { [key in EventTypes]: EventListener } = {
       description: "You can't run the game because everyone should be ready.",
     });
   },
-  [EventTypes["game-can-start"]]: function (_: WebSocketEvent): void {
+  [EventTypes["game-can-start"]]: function (_: any): void {
     const { currentRoom } = storeToRefs(useRoomStore());
 
     currentRoom.value.status = Status.Gaming;
   },
-  [EventTypes["game-end"]]: function (data: WebSocketEvent): void {
+  [EventTypes["game-end"]]: function ({ data }: ScoreEvent): void {
     const { scores, currentRoom } = storeToRefs(useRoomStore());
 
     scores.value = data;
     currentRoom.value.status = Status.Finish;
+  },
+  [EventTypes["text-info"]]: function (data: TextInfoEvent): void {
+    const { textinfo } = storeToRefs(useTextInfoStore());
+    textinfo.value = data;
+  },
+  [EventTypes["stats-app"]]: (stats: StatsAppEvent) => {
+    const { players, gamePlayed } = storeToRefs(usePlayerStore());
+
+    players.value = stats.players;
+    gamePlayed.value = stats.game;
   },
 };

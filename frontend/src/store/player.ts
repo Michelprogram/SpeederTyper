@@ -1,9 +1,16 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { Player } from "./room";
+
+export type Player = {
+  username: string;
+  position: number;
+  isReady: boolean;
+};
 
 export const usePlayerStore = defineStore("player", () => {
-  const players = ref(new Array<string>());
+  const players = ref<Array<string>>([""]);
+  const gamePlayed = ref<number>(0);
+
   const currentUser = ref<Player>({
     username: "Not connected",
     position: 0,
@@ -17,6 +24,7 @@ export const usePlayerStore = defineStore("player", () => {
   });
 
   return {
+    gamePlayed,
     players,
     currentUser,
     orderedPlayers,

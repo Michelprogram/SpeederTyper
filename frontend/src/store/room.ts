@@ -22,8 +22,6 @@ export type Score = {
 export const useRoomStore = defineStore("room", () => {
   const rooms = ref(new Array<Room>());
 
-  const textSize = ref<number>(0);
-
   const scores = ref(new Array<Score>());
 
   const currentRoom = ref<Room>({
@@ -59,7 +57,6 @@ export const useRoomStore = defineStore("room", () => {
   return {
     players,
     firstPlayers,
-    textSize,
     scores,
     playerReady,
     orderedRooms,

@@ -2,7 +2,7 @@ import router from "@/routes";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { storeToRefs } from "pinia";
 import { usePlayerStore } from "@/store/player";
-import { useRoomStore } from "@/store/room";
+import { Score, useRoomStore } from "@/store/room";
 import { useTextInfoStore } from "@/store/textinfo";
 import {
   Status,
@@ -10,7 +10,6 @@ import {
   TextInfoEvent,
   RoomsInfoEvent,
   RoomInfoEvent,
-  ScoreEvent,
 } from "./types";
 
 export enum EventTypes {
@@ -75,7 +74,7 @@ export const eventListeners: {
 
     currentRoom.value.status = Status.Gaming;
   },
-  [EventTypes["game-end"]]: function ({ data }: ScoreEvent): void {
+  [EventTypes["game-end"]]: function (data: Array<Score>): void {
     const { scores, currentRoom } = storeToRefs(useRoomStore());
 
     scores.value = data;

@@ -8,6 +8,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectLabel,
 } from "@/components/ui/select";
 
 import { Plus, Signal } from "lucide-vue-next";
@@ -64,10 +65,12 @@ onMounted(() => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
+              <SelectLabel>Users</SelectLabel>
               <SelectItem
                 v-for="user in orderedPlayers"
-                :value="user"
+                :value="user || 'empty'"
                 @click="joinRoomByUser(user)"
+                :key="user"
               >
                 <p class="flex items-center">
                   {{ user }}

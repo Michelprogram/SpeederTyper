@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { useRoomStore } from "@/store/room";
+import { useTextInfoStore } from "@/store/textinfo";
 import { Player, usePlayerStore } from "@/store/player";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
@@ -18,6 +19,8 @@ import { Status } from "@/services/types";
 
 const { scores, currentRoom } = storeToRefs(useRoomStore());
 const { currentUser } = storeToRefs(usePlayerStore());
+
+const { textinfo } = storeToRefs(useTextInfoStore());
 
 const router = useRouter();
 
@@ -36,8 +39,15 @@ const resetCurrentRoom = () => {
     users: new Array<Player>(),
   };
 
-  //Reset user with websocket
+  textinfo.value = {
+    repoUrl: "",
+    repoNametext: "",
+    fullUrl: "",
+    language: "",
+    fileName: "",
+  };
 
+  //Reset user with websocket
   router.push({ name: "Rooms" });
 };
 </script>

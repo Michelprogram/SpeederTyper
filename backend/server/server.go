@@ -88,10 +88,16 @@ func (s *Server) AddUser(ws *websocket.Conn) error {
 
 func (s *Server) RemoveUser(ws *websocket.Conn) error {
 
-	_, exist := s.Users[ws]
+	username, exist := s.Users[ws]
 
 	if exist {
 		delete(s.Users, ws)
+	}
+
+	key := s.Rooms.FindUserAmongRooms(s.Users[ws])
+
+	if key != "" {
+		s.Rooms.LeaveRoom(username, key)
 	}
 
 	return s.Sender.RoomsInfo(s.Users, s.Rooms.Games)

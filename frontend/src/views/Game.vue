@@ -24,8 +24,7 @@ let countDown: NodeJS.Timeout;
 
 watch(
   () => currentRoom.value.status,
-  (newValue: Status, oldValue: Status) => {
-    console.log(newValue, oldValue);
+  () => {
     countDown = setInterval(() => {
       time.value -= 1;
       if (time.value === 0) {

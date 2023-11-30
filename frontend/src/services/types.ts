@@ -26,10 +26,6 @@ export type RoomInfoEvent = {
   users: Array<Player>;
 };
 
-export type ScoreEvent = {
-  data: Array<Score>;
-};
-
 export enum Status {
   Waiting = 0,
   Gaming = 1,

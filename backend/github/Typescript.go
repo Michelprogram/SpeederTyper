@@ -54,7 +54,7 @@ func (g Typescript) Parser(text []byte) ([]byte, error) {
 	bracketCounter := 1
 	i := bytes.IndexByte(text, '{') + 1
 
-	for bracketCounter > 0 {
+	for bracketCounter > 0 && i < len(text) {
 
 		letter := text[i]
 
@@ -66,6 +66,12 @@ func (g Typescript) Parser(text []byte) ([]byte, error) {
 
 		i++
 	}
+
+	if len(text[:1]) > MAX_CHARACTER {
+		return nil, errors.New("Text too long for a game.")
+	}
+
+	return []byte("function"), nil
 
 	return text[:i], nil
 }

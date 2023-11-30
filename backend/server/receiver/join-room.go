@@ -5,6 +5,7 @@ import (
 	"github.com/michelprogram/speeder-typer/server"
 	"github.com/michelprogram/speeder-typer/types"
 	"golang.org/x/net/websocket"
+	"log"
 )
 
 type JoinRoom struct{}
@@ -22,6 +23,10 @@ func (j JoinRoom) HandleData(s *server.Server, ws *websocket.Conn, data json.Raw
 	defer s.Sender.RoomsInfo(s.Users, s.Rooms.Games)
 
 	username := s.Users[ws]
+
+	k, v := s.Rooms.Games[idRoom.Id]
+
+	log.Println(k, v)
 
 	if s.Rooms.IsUserInRoom(username, idRoom.Id) != nil {
 		return nil

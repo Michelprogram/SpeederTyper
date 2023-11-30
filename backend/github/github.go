@@ -7,7 +7,6 @@ import (
 	"github.com/michelprogram/speeder-typer/server"
 	"github.com/michelprogram/speeder-typer/types"
 	"io"
-	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -15,10 +14,12 @@ import (
 
 var languages = []ParserFunctionCode{
 	/*	Golang{},
-	 */Typescript{}, /*
-		{"Python", "py"},
-		{"Javascript", "js"},*/
+	 */Typescript{},
+	/*	Python{},
+	 */ /*{"Jav", "js"},*/
 }
+
+var MAX_CHARACTER = 500
 
 var PER_PAGE = 10
 
@@ -127,7 +128,6 @@ func FetchRandomCode(users []*types.User, sender server.EventSender) (codes stri
 		if err != nil {
 			continue
 		} else {
-			log.Printf("Code : %s\n", string(code))
 			return string(code), nil
 		}
 	}

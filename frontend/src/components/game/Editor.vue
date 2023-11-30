@@ -6,7 +6,7 @@ import { onMounted, computed, ref, CSSProperties } from "vue";
 import { storeToRefs } from "pinia";
 
 const { currentUser } = storeToRefs(usePlayerStore());
-const { currentRoom, textSize } = storeToRefs(useRoomStore());
+const { currentRoom } = storeToRefs(useRoomStore());
 
 const props = defineProps({
   code: {
@@ -18,17 +18,21 @@ const props = defineProps({
 const lettersRefs = ref<Array<HTMLSpanElement>>([]);
 const cursor = ref<HTMLDivElement>();
 
+let textSize = 0;
+
 const splitedLine = computed(() => {
   return props.code.split(/\n/gm);
 });
 
-const cleanedLine = (line: string) => {
-  line = line.replace(/\t/g, "").trim();
+const cleanedLines = computed(() => {
+  return splitedLine.value.map((line) => {
+    line = line.replace(/\t/g, "").trim();
 
-  textSize.value += line.length;
+    textSize += line.length;
 
-  return line;
-};
+    return line;
+  });
+});
 
 const indentationCls = (line: string): CSSProperties => {
   const factor = 1.25;
@@ -55,6 +59,7 @@ const getSpanAtPosition = (): HTMLSpanElement => {
 
 const typer = (event: KeyboardEvent) => {
   const letter = event.key;
+  console.log(letter);
   const spanAtPosition = getSpanAtPosition();
 
   if (letter === spanAtPosition.textContent) {
@@ -78,8 +83,8 @@ const forwardLetter = (span: HTMLSpanElement) => {
   span.classList.add("letter-valid");
 
   currentUser.value.position++;
-
-  if (currentUser.value.position === textSize.value) {
+  console.log(currentUser.value.position, textSize);
+  if (currentUser.value.position === textSize) {
     socket.sendMessage({
       name: "end-game",
       data: {
@@ -98,17 +103,15 @@ const positionCursor = () => {
 
   const span = getSpanAtPosition();
 
-  console.log(span.textContent, span);
-
   cursor.value.style.top = `${span.offsetTop + 20}px`;
   cursor.value.style.left = `${span.offsetLeft}px`;
+
+  cursor.value.classList.replace("opacity-0", "opacity-100");
 };
 
-/* const myOwnPercentage = computed((): string => {
-  const sizeText = textSize.value;
-
-  return ((currentUser.value.position / sizeText) * 100).toFixed(2);
-}); */
+const myOwnPercentage = computed((): string => {
+  return ((currentUser.value.position / textSize) * 100).toFixed(2);
+});
 
 onMounted(() => {
   document.addEventListener("keypress", typer);
@@ -118,17 +121,15 @@ onMounted(() => {
 <template>
   <div class="w-full relative">
     <div
-      v-if="currentUser.position > 1"
-      class="absolute w-2 h-[3px] bg-black rounded-sm transition-all"
+      class="absolute w-2 h-[3px] bg-black rounded-sm opacity-0 transition-all"
       ref="cursor"
     ></div>
-    <!--     <p class="text-center">{{ myOwnPercentage }}%</p>
- -->
-    <div v-for="(line, i) in splitedLine" class="flex mb-1">
+    <p class="text-center">{{ myOwnPercentage }}%</p>
+    <div v-for="(line, i) in cleanedLines" class="flex mb-1">
       <p class="opacity-80 mx-3 text-primary">{{ i + 1 }}</p>
-      <p :style="indentationCls(line)">
+      <p :style="indentationCls(splitedLine[i])">
         <span
-          v-for="(letter, j) in cleanedLine(line)"
+          v-for="(letter, j) in line"
           :key="i - j"
           ref="lettersRefs"
           class="letter"

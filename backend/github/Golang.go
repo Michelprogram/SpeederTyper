@@ -15,12 +15,11 @@ var _ ParserFunctionCode = (*Golang)(nil)
 
 func (g Golang) FilterFile(trees []Tree) []string {
 	var res []string
-	extension := ".go"
 	test := "_test.go"
 
 	for _, tree := range trees {
 
-		if strings.HasSuffix(tree.Path, extension) && !strings.HasSuffix(tree.Path, test) {
+		if strings.HasSuffix(tree.Path, g.GetExtension()) && !strings.HasSuffix(tree.Path, test) {
 			res = append(res, tree.Path)
 		}
 	}
@@ -52,7 +51,7 @@ func (g Golang) Parser(text []byte) ([]byte, error) {
 	bracketCounter := 1
 	i := bytes.IndexByte(text, '{') + 1
 
-	for bracketCounter > 0 {
+	for bracketCounter > 0 && i < len(text) {
 
 		letter := text[i]
 
@@ -63,6 +62,10 @@ func (g Golang) Parser(text []byte) ([]byte, error) {
 		}
 
 		i++
+	}
+
+	if len(text[:i]) > MAX_CHARACTER {
+		return nil, errors.New("Text too long for a game.")
 	}
 
 	return text[:i], nil

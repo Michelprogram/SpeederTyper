@@ -19,8 +19,8 @@ export const usePlayerStore = defineStore("player", () => {
 
   const orderedPlayers = computed((): Array<string> => {
     return players.value
-      .sort((a, b) => (a > b ? 1 : -1))
-      .filter((u) => u != currentUser.value.username);
+      .filter((u) => u != currentUser.value.username)
+      .sort((a, b) => (a > b ? 1 : -1));
   });
 
   return {

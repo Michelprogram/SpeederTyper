@@ -1,5 +1,5 @@
 import { Player } from "@/store/player";
-import { Room, Score } from "@/store/room";
+import { Room } from "@/store/room";
 
 export type StatsAppEvent = {
   players: Array<string>;

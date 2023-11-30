@@ -70,8 +70,6 @@ func (g Typescript) Parser(text []byte) ([]byte, error) {
 	if len(text[:1]) > MAX_CHARACTER {
 		return nil, errors.New("Text too long for a game.")
 	}
-
-	return []byte("function"), nil
-
+	
 	return text[:i], nil
 }

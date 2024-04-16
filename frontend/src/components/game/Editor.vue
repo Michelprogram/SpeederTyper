@@ -59,12 +59,10 @@ const getSpanAtPosition = (): HTMLSpanElement => {
 
 const typer = (event: KeyboardEvent) => {
   const letter = event.key;
-  console.log(letter);
   const spanAtPosition = getSpanAtPosition();
 
   if (letter === spanAtPosition.textContent) {
     forwardLetter(spanAtPosition);
-    positionCursor();
   } else {
     wrongLetter(spanAtPosition);
   }
@@ -83,7 +81,6 @@ const forwardLetter = (span: HTMLSpanElement) => {
   span.classList.add("letter-valid");
 
   currentUser.value.position++;
-  console.log(currentUser.value.position, textSize);
   if (currentUser.value.position === textSize) {
     socket.sendMessage({
       name: "end-game",
@@ -91,6 +88,8 @@ const forwardLetter = (span: HTMLSpanElement) => {
         id: currentRoom.value.id,
       },
     });
+  } else {
+    positionCursor();
   }
 };
 
